@@ -1,4 +1,4 @@
-package at.ac.tuwien.e0826357.sinustest.util;
+package at.ac.tuwien.e0826357.cardioDataViewer.util;
 
 import android.app.Activity;
 import android.os.Build;

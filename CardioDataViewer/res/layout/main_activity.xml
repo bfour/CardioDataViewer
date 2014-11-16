@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="at.ac.tuwien.e0826357.sinustest.SinusDisplayActivity" >
+    tools:context="at.ac.tuwien.e0826357.cardioDataViewer.MainActivity" >
 
     <!--
          The primary full-screen view. This can be replaced with whatever view
@@ -23,27 +23,11 @@
     <!-- android:textStyle="bold" /> -->
 
     <LinearLayout
+        android:id="@+id/graphLayout"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <com.androidplot.xy.XYPlot
-            android:id="@+id/dynamicXYPlot"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            androidPlot.domainLabel="Domain"
-            androidPlot.graphWidget.marginBottom="25dp"
-            androidPlot.graphWidget.marginLeft="15dp"
-            androidPlot.graphWidget.marginRight="10dp"
-            androidPlot.graphWidget.marginTop="20dp"
-            androidPlot.legendWidget.heightMetric.value="25dp"
-            androidPlot.legendWidget.iconSizeMetrics.heightMetric.value="15dp"
-            androidPlot.legendWidget.iconSizeMetrics.widthMetric.value="15dp"
-            androidPlot.legendWidget.positionMetrics.anchor="right_bottom"
-            androidPlot.rangeLabel="Range"
-            androidPlot.title="A Dynamic XY Plot"
-            androidplot.renderMode="use_background_thread"
-            android:gravity="center"
-            android:keepScreenOn="true" />
+        android:layout_height="match_parent" 
+        android:keepScreenOn="true">
     </LinearLayout>
 
     <!--

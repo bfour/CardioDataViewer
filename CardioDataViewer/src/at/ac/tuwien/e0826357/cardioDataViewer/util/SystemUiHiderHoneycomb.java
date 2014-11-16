@@ -1,4 +1,4 @@
-package at.ac.tuwien.e0826357.sinustest.util;
+package at.ac.tuwien.e0826357.cardioDataViewer.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

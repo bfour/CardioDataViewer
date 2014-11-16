@@ -49,9 +49,13 @@ public class MainActivity extends Activity {
 	private static class GraphViewObserver implements Observer {
 
 		private GraphViewSeries series;
+		private GraphView graph;
+		private boolean hasChanged;
 
-		public GraphViewObserver(GraphViewSeries series) {
+		public GraphViewObserver(GraphViewSeries series, GraphView graph) {
 			this.series = series;
+			this.graph = graph;
+			hasChanged = false;
 		}
 
 		@Override
@@ -60,15 +64,23 @@ public class MainActivity extends Activity {
 			if (obj instanceof GraphViewDataInterface) {
 				update(obs, (GraphViewDataInterface) obj);
 			}
+			hasChanged = true;
 		}
 
-//		public void update(Observable obs, ECTimeSeriesSegment segment) {
-			// TODO
-//		}
+		// public void update(Observable obs, ECTimeSeriesSegment segment) {
+		// TODO
+		// }
 
-		public void update(Observable obs, GraphViewDataInterface data) {
+		private void update(Observable obs, GraphViewDataInterface data) {
 			series.appendData(data, false, 1861);
 		}
+
+		public synchronized boolean isHasChangedAndReset() {
+			boolean hasChangedCur = hasChanged;
+			hasChanged = false;
+			return hasChangedCur;
+		}
+
 	}
 
 	@Override
@@ -167,10 +179,30 @@ public class MainActivity extends Activity {
 				new GraphViewData[] { new GraphViewData(0, 0) });
 		this.graph.addSeries(channelOneSeries);
 
-		Observer serviceObserver = new GraphViewObserver(channelOneSeries);
+		final GraphViewObserver serviceObserver = new GraphViewObserver(
+				channelOneSeries, graph);
 		dataService = ServiceManager.getInstance()
 				.getCardiovascularDataService();
 		dataService.addObserver(serviceObserver);
+
+		final Handler threadHandler = new Handler();
+		final Runnable redrawAction = new Runnable() {
+			@Override
+			public void run() {
+				if (serviceObserver.isHasChangedAndReset())
+					graph.redrawAll();
+			}
+		};
+		Thread refresherThread = new Thread() {
+			@Override
+			public void run() {
+				while (!isInterrupted()) {
+					threadHandler.postDelayed(redrawAction, 186);
+				}
+			}
+		};
+		refresherThread.start();
+
 		dataService.start();
 
 	}

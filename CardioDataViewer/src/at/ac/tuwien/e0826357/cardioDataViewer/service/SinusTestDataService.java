@@ -1,8 +1,5 @@
 package at.ac.tuwien.e0826357.cardioDataViewer.service;
 
-import at.ac.tuwien.e0826357.cardioDataViewer.domain.ECTimeSeriesSegment;
-import at.ac.tuwien.e0826357.cardioDataViewer.domain.GraphViewOptimizedECTimeSeriesSegment;
-
 import com.jjoe64.graphview.GraphView.GraphViewData;
 
 public class SinusTestDataService extends CardiovascularDataService {
@@ -12,10 +9,9 @@ public class SinusTestDataService extends CardiovascularDataService {
 		private static final double ROUND_LENGTH = 2 * Math.PI;
 
 		private int timeSeriesLength = 681;
-		private int secondsPerRound = 1;
-		private long pauseInMSec = 10;
+		private int secondsPerRound = 10;
+		private long pauseInMSec = 186;
 
-		private ECTimeSeriesSegment segment;
 		private boolean allowedToContinue = false;
 		private SinusTestDataService service;
 
@@ -27,7 +23,7 @@ public class SinusTestDataService extends CardiovascularDataService {
 			allowedToContinue = false;
 		}
 
-		// @Override
+		@Override
 		public void run() {
 			try {
 				allowedToContinue = true;
@@ -40,7 +36,6 @@ public class SinusTestDataService extends CardiovascularDataService {
 						// measure time
 						time = System.currentTimeMillis();
 						long elapsedMSec = time - previousTime;
-						double elapsedSec = elapsedMSec / 1000;
 						// calc value
 						// note: velocity is defined as ROUND_LENGTH and
 						// secondsPerRound are defined
@@ -48,10 +43,11 @@ public class SinusTestDataService extends CardiovascularDataService {
 						// since last round
 						// --> v = s/t -> s = v*t
 						double velocityInRPS = ROUND_LENGTH / secondsPerRound;
-						double deltaLength = velocityInRPS * elapsedSec;
+						double deltaLength = (velocityInRPS * elapsedMSec)/1000;
 						double newValue = previousValue + deltaLength;
 						if (newValue > ROUND_LENGTH) {
-							newValue -= ROUND_LENGTH;
+							int times = (int) Math.floor(newValue/ROUND_LENGTH);
+							newValue -= ROUND_LENGTH * (times);
 						}
 						// save
 						service.receive(time, Math.sin(newValue));
@@ -84,7 +80,7 @@ public class SinusTestDataService extends CardiovascularDataService {
 	@Override
 	public void start() {
 		generator = new SinusGenerator(this);
-		generator.run();
+		(new Thread(generator)).start();
 	}
 
 	@Override
@@ -94,8 +90,9 @@ public class SinusTestDataService extends CardiovascularDataService {
 
 	private void receive(Long time, Double value) {
 		setChanged();
-//		notifyObservers(new GraphViewData((double) (time/1000), Math.round(value)));
-		notifyObservers(new GraphViewData(x++, y++));
+//		notifyObservers(new GraphViewData((double) time, value));
+		notifyObservers(new GraphViewData(x++, value));
+//		notifyObservers(new GraphViewData(x++, y++));
 	}
 
 }

@@ -5,6 +5,8 @@ import java.util.Observer;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import at.ac.tuwien.e0826357.cardioDataViewer.domain.ECTimeSeriesSegment;
@@ -15,6 +17,7 @@ import at.ac.tuwien.e0826357.sinustest.R;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewDataInterface;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
@@ -66,14 +69,27 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main_activity);
 		LinearLayout graphLayout = (LinearLayout) findViewById(R.id.graphLayout);
 		this.graph = new LineGraphView(this, "Channel 1");
+
+		graph.setBackgroundColor(Color.WHITE);
+		graph.setViewPort(0, 186);
+		graph.setScrollable(true);
+		graph.setScalable(true);
+		graph.setShowLegend(true);
+		graph.setLegendAlign(LegendAlign.BOTTOM);
+		
+		graph.setManualMaxY(true);
+		graph.setManualMinY(true);
+		graph.setManualYMaxBound(1.0);
+		graph.setManualYMinBound(-1.0);
+
 		graphLayout.addView(graph);
 
 		// logic
-		GraphViewSeries channelOneSeries = new GraphViewSeries("Channel 1 Signal",
-				new GraphViewSeriesStyle(Color.GRAY, 1),
+		GraphViewSeries channelOneSeries = new GraphViewSeries(
+				"Channel 1 Signal", new GraphViewSeriesStyle(Color.BLACK, 2),
 				new GraphViewData[] { new GraphViewData(0, 0) });
 		this.graph.addSeries(channelOneSeries);
-		
+
 		Observer serviceObserver = new GraphViewObserver(channelOneSeries);
 		dataService = ServiceManager.getInstance()
 				.getCardiovascularDataService();
@@ -86,14 +102,14 @@ public class MainActivity extends Activity {
 	public void onResume() {
 		// TODO
 		super.onResume();
-		dataService.start();
+		// dataService.start();
 	}
 
 	@Override
 	public void onPause() {
 		// TODO
 		super.onPause();
-		dataService.stop();
+		// dataService.stop();
 	}
 
 }

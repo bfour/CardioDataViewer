@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package at.ac.tuwien.e0826357.sinustest;
+package at.ac.tuwien.e0826357.cardioDataViewer;
 
 public final class R {
     public static final class attr {
@@ -84,8 +84,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #ButtonBarContainerTheme_metaButtonBarButtonStyle at.ac.tuwien.e0826357.sinustest:metaButtonBarButtonStyle}</code></td><td></td></tr>
-           <tr><td><code>{@link #ButtonBarContainerTheme_metaButtonBarStyle at.ac.tuwien.e0826357.sinustest:metaButtonBarStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #ButtonBarContainerTheme_metaButtonBarButtonStyle at.ac.tuwien.e0826357.cardioDataViewer:metaButtonBarButtonStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #ButtonBarContainerTheme_metaButtonBarStyle at.ac.tuwien.e0826357.cardioDataViewer:metaButtonBarStyle}</code></td><td></td></tr>
            </table>
            @see #ButtonBarContainerTheme_metaButtonBarButtonStyle
            @see #ButtonBarContainerTheme_metaButtonBarStyle
@@ -94,23 +94,23 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
             0x7f010000, 0x7f010001
         };
         /**
-          <p>This symbol is the offset where the {@link at.ac.tuwien.e0826357.sinustest.R.attr#metaButtonBarButtonStyle}
+          <p>This symbol is the offset where the {@link at.ac.tuwien.e0826357.cardioDataViewer.R.attr#metaButtonBarButtonStyle}
           attribute's value can be found in the {@link #ButtonBarContainerTheme} array.
 
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name at.ac.tuwien.e0826357.sinustest:metaButtonBarButtonStyle
+          @attr name at.ac.tuwien.e0826357.cardioDataViewer:metaButtonBarButtonStyle
         */
         public static final int ButtonBarContainerTheme_metaButtonBarButtonStyle = 1;
         /**
-          <p>This symbol is the offset where the {@link at.ac.tuwien.e0826357.sinustest.R.attr#metaButtonBarStyle}
+          <p>This symbol is the offset where the {@link at.ac.tuwien.e0826357.cardioDataViewer.R.attr#metaButtonBarStyle}
           attribute's value can be found in the {@link #ButtonBarContainerTheme} array.
 
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name at.ac.tuwien.e0826357.sinustest:metaButtonBarStyle
+          @attr name at.ac.tuwien.e0826357.cardioDataViewer:metaButtonBarStyle
         */
         public static final int ButtonBarContainerTheme_metaButtonBarStyle = 0;
     };

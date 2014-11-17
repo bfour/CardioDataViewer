@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.ServiceManager;
 import at.ac.tuwien.e0826357.cardioDataViewer.util.SystemUiHider;
-import at.ac.tuwien.e0826357.sinustest.R;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;

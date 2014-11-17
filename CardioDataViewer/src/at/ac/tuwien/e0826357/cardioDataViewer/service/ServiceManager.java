@@ -14,11 +14,7 @@ public class ServiceManager {
 	}
 
 	public CardiovascularDataService getCardiovascularDataService() {
-//		 return CardiovascularDataService.getInstance();
-		 return SinusTestDataService.getInstance();
+		 return SineTestDataService.getInstance();
 	}
-
-//	public SinusTestDataService getSinusTestDataService() {
-//	}
 
 }

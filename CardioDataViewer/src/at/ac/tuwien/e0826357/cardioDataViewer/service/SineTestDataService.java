@@ -2,9 +2,9 @@ package at.ac.tuwien.e0826357.cardioDataViewer.service;
 
 import com.jjoe64.graphview.GraphView.GraphViewData;
 
-public class SinusTestDataService extends CardiovascularDataService {
+public class SineTestDataService extends CardiovascularDataService {
 
-	class SinusGenerator implements Runnable {
+	class SineGenerator implements Runnable {
 
 		private static final double ROUND_LENGTH = 2 * Math.PI;
 
@@ -13,9 +13,9 @@ public class SinusTestDataService extends CardiovascularDataService {
 		private long pauseInMSec = 18;
 
 		private boolean allowedToContinue = false;
-		private SinusTestDataService service;
+		private SineTestDataService service;
 
-		public SinusGenerator(SinusTestDataService service) {
+		public SineGenerator(SineTestDataService service) {
 			this.service = service;
 		}
 
@@ -63,22 +63,22 @@ public class SinusTestDataService extends CardiovascularDataService {
 
 	}
 
-	private static SinusTestDataService instance;
-	private SinusGenerator generator;
+	private static SineTestDataService instance;
+	private SineGenerator generator;
 	private int x = 1;
 
-	private SinusTestDataService() {
+	private SineTestDataService() {
 	}
 
-	public static SinusTestDataService getInstance() {
+	public static SineTestDataService getInstance() {
 		if (instance == null)
-			instance = new SinusTestDataService();
+			instance = new SineTestDataService();
 		return instance;
 	}
 
 	@Override
 	public void start() {
-		generator = new SinusGenerator(this);
+		generator = new SineGenerator(this);
 		(new Thread(generator)).start();
 	}
 

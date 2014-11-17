@@ -9,8 +9,8 @@ public class SinusTestDataService extends CardiovascularDataService {
 		private static final double ROUND_LENGTH = 2 * Math.PI;
 
 		private int timeSeriesLength = 681;
-		private int secondsPerRound = 10;
-		private long pauseInMSec = 186;
+		private int secondsPerRound = 4;
+		private long pauseInMSec = 18;
 
 		private boolean allowedToContinue = false;
 		private SinusTestDataService service;
@@ -66,7 +66,6 @@ public class SinusTestDataService extends CardiovascularDataService {
 	private static SinusTestDataService instance;
 	private SinusGenerator generator;
 	private int x = 1;
-	private int y = 1;
 
 	private SinusTestDataService() {
 	}
@@ -92,7 +91,6 @@ public class SinusTestDataService extends CardiovascularDataService {
 		setChanged();
 //		notifyObservers(new GraphViewData((double) time, value));
 		notifyObservers(new GraphViewData(x++, value));
-//		notifyObservers(new GraphViewData(x++, y++));
 	}
 
 }

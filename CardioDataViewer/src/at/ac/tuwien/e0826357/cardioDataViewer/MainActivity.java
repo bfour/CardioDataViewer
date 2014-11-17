@@ -3,6 +3,7 @@ package at.ac.tuwien.e0826357.cardioDataViewer;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Color;
@@ -49,12 +50,10 @@ public class MainActivity extends Activity {
 	private static class GraphViewObserver implements Observer {
 
 		private GraphViewSeries series;
-		private GraphView graph;
 		private boolean hasChanged;
 
-		public GraphViewObserver(GraphViewSeries series, GraphView graph) {
+		public GraphViewObserver(GraphViewSeries series) {
 			this.series = series;
-			this.graph = graph;
 			hasChanged = false;
 		}
 
@@ -95,10 +94,10 @@ public class MainActivity extends Activity {
 		this.graph = new LineGraphView(this, "Channel 1");
 
 		graph.setBackgroundColor(Color.WHITE);
-		graph.setViewPort(0, 186);
+		graph.setViewPort(0, 1861);
 		graph.setScrollable(true);
-		graph.setScalable(true);
-		graph.setShowLegend(true);
+		graph.setScalable(false);
+		graph.setShowLegend(false);
 		graph.setLegendAlign(LegendAlign.BOTTOM);
 
 		graph.setManualMaxY(true);
@@ -180,7 +179,7 @@ public class MainActivity extends Activity {
 		this.graph.addSeries(channelOneSeries);
 
 		final GraphViewObserver serviceObserver = new GraphViewObserver(
-				channelOneSeries, graph);
+				channelOneSeries);
 		dataService = ServiceManager.getInstance()
 				.getCardiovascularDataService();
 		dataService.addObserver(serviceObserver);
@@ -197,7 +196,13 @@ public class MainActivity extends Activity {
 			@Override
 			public void run() {
 				while (!isInterrupted()) {
-					threadHandler.postDelayed(redrawAction, 186);
+					try {
+						sleep(18);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					threadHandler.post(redrawAction);
 				}
 			}
 		};
@@ -211,14 +216,16 @@ public class MainActivity extends Activity {
 	public void onResume() {
 		// TODO
 		super.onResume();
-		// dataService.start();
+		if (dataService != null)
+			dataService.start();
 	}
 
 	@Override
 	public void onPause() {
 		// TODO
 		super.onPause();
-		// dataService.stop();
+		if (dataService != null)
+			dataService.stop();
 	}
 
 	@Override
@@ -237,6 +244,7 @@ public class MainActivity extends Activity {
 	 * while interacting with activity UI.
 	 */
 	View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
+		@SuppressLint("ClickableViewAccessibility") // TODO (low) check
 		@Override
 		public boolean onTouch(View view, MotionEvent motionEvent) {
 			if (AUTO_HIDE) {

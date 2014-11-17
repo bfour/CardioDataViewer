@@ -6,7 +6,7 @@ import java.util.Map;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 
-public class GraphViewOptimizedECTimeSeriesSegment extends ECTimeSeriesSegment {
+public class GraphViewOptimizedECTimeSeriesSegment extends TimeSeriesSegment<Double> {
 
 	private int currentIndex;
 	private GraphViewData[] gvData;

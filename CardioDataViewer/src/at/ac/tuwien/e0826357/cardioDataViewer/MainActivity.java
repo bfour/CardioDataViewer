@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
 import at.ac.tuwien.e0826357.cardioDataCommons.service.ServiceException;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.ServiceManager;
@@ -66,6 +67,8 @@ public class MainActivity extends Activity {
 			// TODO
 			if (obj instanceof GraphViewDataInterface) {
 				update(obs, (GraphViewDataInterface) obj);
+			} else if (obj instanceof CardiovascularData) {
+				update(obs, (CardiovascularData) obj);
 			}
 			hasChanged = true;
 		}
@@ -73,6 +76,9 @@ public class MainActivity extends Activity {
 		// public void update(Observable obs, ECTimeSeriesSegment segment) {
 		// TODO
 		// }
+		private void update(Observable obs, CardiovascularData data) {
+			series.appendData(new GraphViewData(data.getTime(),data.getECGA()), false, 18161);
+		}
 
 		private void update(Observable obs, GraphViewDataInterface data) {
 			series.appendData(data, false, 1861);
@@ -98,7 +104,7 @@ public class MainActivity extends Activity {
 		this.graph = new LineGraphView(this, "Channel 1");
 
 		graph.setBackgroundColor(Color.WHITE);
-		graph.setViewPort(0, 1861);
+		graph.setViewPort(0, 18161);
 		graph.setScrollable(true);
 		graph.setScalable(false);
 		graph.setShowLegend(false);
@@ -106,8 +112,8 @@ public class MainActivity extends Activity {
 
 		graph.setManualMaxY(true);
 		graph.setManualMinY(true);
-		graph.setManualYMaxBound(1.0);
-		graph.setManualYMinBound(-1.0);
+		graph.setManualYMaxBound(1024);
+		graph.setManualYMinBound(0);
 
 		graphLayout.addView(graph);
 

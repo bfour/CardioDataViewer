@@ -25,7 +25,7 @@ public abstract class TransmitterService<T> {
 	}
 
 	public void start() {
-		thread = new Thread();
+		thread = new Thread(getTransmitter());
 		thread.start();
 	}
 

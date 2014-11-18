@@ -10,7 +10,7 @@ import at.ac.tuwien.e0826357.cardioDataServer.service.sending.SenderService;
 class AutoPacingBatchTransmitter<T> implements Runnable {
 
 	private static final int MIN_THREAD_PAUSE_INMSEC = 18;
-	private static final int MAX_THREAD_PAUSE_INMSEC = 1861;
+	private static final int MAX_THREAD_PAUSE_INMSEC = 186;
 	private static final int AUTO_PACE_STEP_IN_MS = 16;
 
 	private DataService<T> dataServ;
@@ -31,13 +31,17 @@ class AutoPacingBatchTransmitter<T> implements Runnable {
 		while (true) {
 			try {
 				data = dataServ.getNext();
+//				System.out
+//						.println("retrieved " + data.size() + " data records");
 				senderServ.batchTell(data);
+//				System.out.println("transmitted data records");
 			} catch (DataLayerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
 				pause = calculateNextPause(pause, data.size());
+//				System.out.println("auto-pause at " + pause);
 				Thread.sleep(pause);
 			} catch (InterruptedException e) {
 				return;

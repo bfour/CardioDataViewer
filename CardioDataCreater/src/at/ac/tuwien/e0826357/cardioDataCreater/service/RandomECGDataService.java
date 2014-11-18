@@ -9,7 +9,7 @@ public class RandomECGDataService {
 	private static final int BASE_ECG = 486;
 	private static final int PEAK_ECG = 861;
 	private static final int LOW_ECG = 18;
-	
+
 	private Random noiseRandomizer;
 	private Random noiseSignumRandomizer;
 	private Random oxygenSaturationRandomizer;
@@ -36,14 +36,14 @@ public class RandomECGDataService {
 			return MAX_ECG;
 		return signal;
 	}
-	
+
 	public int getOxy(long timeDiffInMSec) {
 		return oxygenSaturationRandomizer.nextInt(100);
 	}
 
 	private int emulateHumanSignal(long timeDiffInMSec) {
 		long diff = timeDiffInMSec - lastPeak;
-		System.err.println("diff " + diff);
+		// System.err.println("diff " + diff);
 		if (lastWasPeak) {
 			lastWasPeak = false;
 			return LOW_ECG;

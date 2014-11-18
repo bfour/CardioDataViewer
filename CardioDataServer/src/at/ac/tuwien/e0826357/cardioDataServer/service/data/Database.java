@@ -11,7 +11,7 @@ public class Database {
 	public Database(String className, String url) throws DataLayerException {
 		try {
 			Class.forName(className);
-			conn = DriverManager.getConnection("jdbc:sqlite:test.db");
+			conn = DriverManager.getConnection(url);
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new DataLayerException("failed to initialize database connection", e);
 		}

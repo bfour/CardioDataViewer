@@ -15,47 +15,56 @@ public class CardiovascularDataTCPReceiverService extends
 	private static class Receiver implements Runnable {
 
 		private CardiovascularDataTCPReceiverService serv;
-		private BufferedReader inboundStream;
+		private int port;
+		private String serverAddress;
 
 		public Receiver(CardiovascularDataTCPReceiverService serv,
-				BufferedReader inboundStream) {
+				String serverAddress, int port) {
 			this.serv = serv;
-			this.inboundStream = inboundStream;
+			this.serverAddress = serverAddress;
+			this.port = port;
 		}
 
 		@Override
 		public void run() {
 			String line = "";
+			Socket socket = null;
 			try {
+				socket = new Socket(serverAddress, port);
+				BufferedReader inboundStream = new BufferedReader(
+						new InputStreamReader(socket.getInputStream()));
 				while ((line = inboundStream.readLine()) != null) {
 					serv.receive(CardiovascularDataMarshaller.unmarshal(line));
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				if (socket != null)
+					try {
+						socket.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			}
 		}
 
 	}
 
-	private Socket socket;
-	private BufferedReader inboundStream;
 	private Thread thread;
+	private String serverAddress;
+	private int port;
 
 	public CardiovascularDataTCPReceiverService(String serverAddress, int port)
 			throws ServiceException {
-		try {
-			socket = new Socket(serverAddress, port);
-			inboundStream = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
-		} catch (IOException e) {
-			throw new ServiceException(e);
-		}
+		this.serverAddress = serverAddress;
+		this.port = port;
 	}
 
 	@Override
 	public void start() {
-		thread = new Thread(new Receiver(this, inboundStream));
+		thread = new Thread(new Receiver(this, serverAddress, port));
 		thread.start();
 	}
 

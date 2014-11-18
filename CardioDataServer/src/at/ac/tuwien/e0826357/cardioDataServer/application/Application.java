@@ -18,14 +18,16 @@ public class Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		if (args.length != 2){
-			System.err.println("invalid parameters; required: <executable> <databasePath> <port>");
+
+		if (args.length != 2) {
+			System.err
+					.println("invalid parameters; required: <executable> <databasePath> <port>");
 			return;
 		}
-			
+
 		try {
 			String dbPath = args[0];
+			// System.out.println("path: "+dbPath);
 			int port = Integer.parseInt(args[1]);
 			Database db = new Database("org.sqlite.JDBC", "jdbc:sqlite:"
 					+ dbPath);
@@ -39,8 +41,9 @@ public class Application {
 		} catch (ServiceException | DataLayerException | NumberFormatException e) {
 			System.err
 					.println("sorry, failed to initialize: " + e.getMessage());
+			e.printStackTrace();
 		}
-		
+
 	}
 
 }

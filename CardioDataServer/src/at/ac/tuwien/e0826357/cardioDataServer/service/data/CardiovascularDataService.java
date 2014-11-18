@@ -4,7 +4,8 @@ import java.util.List;
 
 import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
 
-public class CardiovascularDataService implements DataService<CardiovascularData> {
+public class CardiovascularDataService implements
+		DataService<CardiovascularData> {
 
 	private static CardiovascularDataService instance;
 	private CardiovascularDataDAO cardioDAO;
@@ -33,8 +34,10 @@ public class CardiovascularDataService implements DataService<CardiovascularData
 	public synchronized List<CardiovascularData> getNext()
 			throws DataLayerException {
 		List<CardiovascularData> list = cardioDAO.getAllAfter(lastID);
-		CardiovascularData lastEntry = list.get(list.size() - 1);
-		lastID = lastEntry.getTime();
+		if (list.size() > 0) {
+			CardiovascularData lastEntry = list.get(list.size() - 1);
+			lastID = lastEntry.getTime();
+		}
 		return list;
 	}
 

@@ -27,7 +27,7 @@ public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 		if (getAllAfterPrepStatement == null) {
 			try {
 				getAllAfterPrepStatement = conn
-						.prepareStatement("SELECT ID, ECGA, ECGB, ECGC, oxygenSaturationPerMille, count(*) OVER () As numOfRows "
+						.prepareStatement("SELECT ID, ECGA, ECGB, ECGC, oxygenSaturationPerMille "
 								+ "FROM data WHERE ID > ?;");
 			} catch (SQLException e) {
 				throw new DataLayerException("failed to prepare statement", e);
@@ -41,12 +41,12 @@ public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 			// check if there's at least one entry, so we can check for
 			// numOfRows, which is used for allocating exactly the amount of
 			// space in the ArrayList that is needed
-			boolean hasAtLeastOne = result.next();
-			if (!hasAtLeastOne)
-				return new ArrayList<>(0);
-			List<CardiovascularData> data = new ArrayList<>(
-					result.getInt("numOfRows"));
-			do {
+			// boolean hasAtLeastOne = result.next();
+			// if (!hasAtLeastOne)
+			// return new ArrayList<>(0);
+			// int numOfRows = result.getInt("numOfRows");
+			List<CardiovascularData> data = new ArrayList<>();
+			while (result.next()) {
 				long ID = result.getLong(1);
 				int ECGA = result.getInt(2);
 				int ECGB = result.getInt(3);
@@ -54,7 +54,7 @@ public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 				int oxygenSaturationPerMille = result.getInt(5);
 				data.add(new CardiovascularData(ID, ECGA, ECGB, ECGC,
 						oxygenSaturationPerMille));
-			} while (result.next());
+			}
 			return data;
 		} catch (SQLException e) {
 			throw new DataLayerException("failed to get data", e);

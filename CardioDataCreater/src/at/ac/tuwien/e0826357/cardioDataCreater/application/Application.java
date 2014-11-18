@@ -26,8 +26,8 @@ public class Application {
 			Statement dropStatement = connection.createStatement();
 			String dropDataTableSQL = "DROP TABLE IF EXISTS data;";
 			dropStatement.executeUpdate(dropDataTableSQL);
-			dropStatement.close();			
-			
+			dropStatement.close();
+
 			Statement createStatement = connection.createStatement();
 			String createDataTableSQL = "CREATE TABLE IF NOT EXISTS data "
 					+ "(ID LONG PRIMARY KEY NOT NULL, "
@@ -52,9 +52,10 @@ public class Application {
 				long timeDiff = System.currentTimeMillis() - startTime;
 				CardiovascularData data = new CardiovascularData(timeDiff,
 						dataServA.getECG(timeDiff), dataServB.getECG(timeDiff),
-						dataServC.getECG(timeDiff), dataServOxy.getOxy(timeDiff));
+						dataServC.getECG(timeDiff),
+						dataServOxy.getOxy(timeDiff));
 
-				System.out.println(data);
+				// System.out.println(data);
 
 				insertStatement.setLong(1, timeDiff);
 				insertStatement.setInt(2, data.getECGA());

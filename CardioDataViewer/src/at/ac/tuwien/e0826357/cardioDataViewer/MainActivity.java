@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+import at.ac.tuwien.e0826357.cardioDataCommons.service.ServiceException;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.ServiceManager;
 import at.ac.tuwien.e0826357.cardioDataViewer.util.SystemUiHider;
@@ -179,8 +181,15 @@ public class MainActivity extends Activity {
 
 		final GraphViewObserver serviceObserver = new GraphViewObserver(
 				channelOneSeries);
-		dataService = ServiceManager.getInstance()
-				.getCardiovascularDataService();
+		try {
+			dataService = ServiceManager.getInstance()
+					.getCardiovascularDataService();
+		} catch (ServiceException e1) {
+			Toast.makeText(this, "Sorry, failed to get data service. Closing.",
+					Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
 		dataService.addObserver(serviceObserver);
 
 		final Handler threadHandler = new Handler();
@@ -243,7 +252,8 @@ public class MainActivity extends Activity {
 	 * while interacting with activity UI.
 	 */
 	View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-		@SuppressLint("ClickableViewAccessibility") // TODO (low) check
+		@SuppressLint("ClickableViewAccessibility")
+		// TODO (low) check
 		@Override
 		public boolean onTouch(View view, MotionEvent motionEvent) {
 			if (AUTO_HIDE) {

@@ -1,5 +1,7 @@
 package at.ac.tuwien.e0826357.cardioDataViewer.service;
 
+import at.ac.tuwien.e0826357.cardioDataCommons.service.ServiceException;
+
 public class ServiceManager {
 
 	private static ServiceManager instance;
@@ -13,8 +15,9 @@ public class ServiceManager {
 		return instance;
 	}
 
-	public CardiovascularDataService getCardiovascularDataService() {
-		 return SineTestDataService.getInstance();
+	public CardiovascularDataService getCardiovascularDataService() throws ServiceException {
+		// return SineTestDataService.getInstance();
+		return new CardiovascularDataTCPReceiverService("10.0.2.2", 1861);
 	}
 
 }

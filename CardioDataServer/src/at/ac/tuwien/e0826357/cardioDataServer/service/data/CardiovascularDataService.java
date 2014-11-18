@@ -2,7 +2,7 @@ package at.ac.tuwien.e0826357.cardioDataServer.service.data;
 
 import java.util.List;
 
-import at.ac.tuwien.e0826357.cardioDataServer.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
 
 public class CardiovascularDataService implements DataService<CardiovascularData> {
 

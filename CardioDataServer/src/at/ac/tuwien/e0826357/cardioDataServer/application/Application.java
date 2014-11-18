@@ -1,6 +1,7 @@
 package at.ac.tuwien.e0826357.cardioDataServer.application;
 
-import at.ac.tuwien.e0826357.cardioDataServer.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioDataCommons.service.ServiceException;
 import at.ac.tuwien.e0826357.cardioDataServer.service.data.CardiovascularDataSQLiteDAO;
 import at.ac.tuwien.e0826357.cardioDataServer.service.data.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioDataServer.service.data.DataLayerException;
@@ -10,7 +11,6 @@ import at.ac.tuwien.e0826357.cardioDataServer.service.sending.CardiovascularData
 import at.ac.tuwien.e0826357.cardioDataServer.service.sending.SenderService;
 import at.ac.tuwien.e0826357.cardioDataServer.service.transmission.AutoPacingBatchTransmitterService;
 import at.ac.tuwien.e0826357.cardioDataServer.service.transmission.TransmitterService;
-import at.ac.tuwien.e0826357.cardioDataViewer.service.ServiceException;
 
 public class Application {
 

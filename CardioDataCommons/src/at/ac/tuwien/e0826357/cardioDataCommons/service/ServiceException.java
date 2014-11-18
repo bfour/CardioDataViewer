@@ -1,4 +1,4 @@
-package at.ac.tuwien.e0826357.cardioDataViewer.service;
+package at.ac.tuwien.e0826357.cardioDataCommons.service;
 
 public class ServiceException extends Exception {
 

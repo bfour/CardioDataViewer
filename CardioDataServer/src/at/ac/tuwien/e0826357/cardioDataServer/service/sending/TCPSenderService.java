@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import at.ac.tuwien.e0826357.cardioDataViewer.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioDataCommons.service.ServiceException;
 
 public class TCPSenderService {
 

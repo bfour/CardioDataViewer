@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.ac.tuwien.e0826357.cardioDataServer.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
 
 public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 

@@ -45,6 +45,9 @@ public class MainActivity extends Activity {
 	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
 	private SystemUiHider mSystemUiHider;
 
+	private static final String SERVER_URL = "192.168.111.11";
+	private static final int SERVER_PORT = 1861;
+	
 	private CardiovascularDataService dataService;
 	private GraphView graph;
 
@@ -182,7 +185,7 @@ public class MainActivity extends Activity {
 		final GraphViewObserver serviceObserver = new GraphViewObserver(
 				channelOneSeries);
 		try {
-			dataService = ServiceManager.getInstance()
+			dataService = ServiceManager.getInstance(SERVER_URL, SERVER_PORT)
 					.getCardiovascularDataService();
 		} catch (ServiceException e1) {
 			Toast.makeText(this, "Sorry, failed to get data service. Closing.",

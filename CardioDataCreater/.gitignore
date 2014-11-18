@@ -1,0 +1,6 @@
+/.settings/
+/bin/
+/.classpath
+/.project
+/test.db-journal
+*.db

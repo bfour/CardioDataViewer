@@ -32,5 +32,13 @@ public class CardiovascularData {
 	public int getOxygenSaturationPerMille() {
 		return oxygenSaturationPerMille;
 	}
+
+	@Override
+	public String toString() {
+		return "CardiovascularData [time=" + time + ", ECGA=" + ECGA
+				+ ", ECGB=" + ECGB + ", ECGC=" + ECGC
+				+ ", oxygenSaturationPerMille=" + oxygenSaturationPerMille
+				+ "]";
+	}
 	
 }

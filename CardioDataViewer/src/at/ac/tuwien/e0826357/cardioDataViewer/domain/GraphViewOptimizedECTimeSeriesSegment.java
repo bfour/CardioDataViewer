@@ -2,7 +2,6 @@ package at.ac.tuwien.e0826357.cardioDataViewer.domain;
 
 import java.util.Map;
 
-
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 

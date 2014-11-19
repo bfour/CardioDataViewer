@@ -6,12 +6,17 @@ import java.util.Observer;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
@@ -35,22 +40,6 @@ import com.jjoe64.graphview.LineGraphView;
  * @see SystemUiHider
  */
 public class MainActivity extends Activity {
-
-	private static final boolean AUTO_HIDE = true;
-	private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-	/**
-	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
-	 * will show the system UI visibility upon interaction.
-	 */
-	private static final boolean TOGGLE_ON_CLICK = false;
-	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
-	private SystemUiHider mSystemUiHider;
-
-	private static final String SERVER_URL = "192.168.111.11";
-	private static final int SERVER_PORT = 1861;
-	
-	private CardiovascularDataService dataService;
-	private GraphView graph;
 
 	private static class GraphViewObserver implements Observer {
 
@@ -77,7 +66,9 @@ public class MainActivity extends Activity {
 		// TODO
 		// }
 		private void update(Observable obs, CardiovascularData data) {
-			series.appendData(new GraphViewData(data.getTime(),data.getECGA()), false, 18161);
+			series.appendData(
+					new GraphViewData(data.getTime(), data.getECGA()), false,
+					18161);
 		}
 
 		private void update(Observable obs, GraphViewDataInterface data) {
@@ -91,6 +82,21 @@ public class MainActivity extends Activity {
 		}
 
 	}
+
+	private static final boolean AUTO_HIDE = true;
+	private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+	/**
+	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
+	 * will show the system UI visibility upon interaction.
+	 */
+	private static final boolean TOGGLE_ON_CLICK = false;
+	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
+	private SystemUiHider mSystemUiHider;
+
+	private CardiovascularDataService dataService;
+	private Thread refresherThread;
+	private GraphViewObserver serviceObserver;
+	private GraphView graph;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -179,8 +185,11 @@ public class MainActivity extends Activity {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(
-				mDelayHideTouchListener);
+		// findViewById(R.id.dummy_button).setOnTouchListener(
+		// mDelayHideTouchListener);
+
+		// ask for server location
+		letUserSetServer();
 
 		// logic
 		GraphViewSeries channelOneSeries = new GraphViewSeries(
@@ -188,18 +197,7 @@ public class MainActivity extends Activity {
 				new GraphViewData[] { new GraphViewData(0, 0) });
 		this.graph.addSeries(channelOneSeries);
 
-		final GraphViewObserver serviceObserver = new GraphViewObserver(
-				channelOneSeries);
-		try {
-			dataService = ServiceManager.getInstance(SERVER_URL, SERVER_PORT)
-					.getCardiovascularDataService();
-		} catch (ServiceException e1) {
-			Toast.makeText(this, "Sorry, failed to get data service. Closing.",
-					Toast.LENGTH_LONG).show();
-			finish();
-			return;
-		}
-		dataService.addObserver(serviceObserver);
+		serviceObserver = new GraphViewObserver(channelOneSeries);
 
 		final Handler threadHandler = new Handler();
 		final Runnable redrawAction = new Runnable() {
@@ -209,7 +207,7 @@ public class MainActivity extends Activity {
 					graph.redrawAll();
 			}
 		};
-		Thread refresherThread = new Thread() {
+		refresherThread = new Thread() {
 			@Override
 			public void run() {
 				while (!isInterrupted()) {
@@ -225,7 +223,68 @@ public class MainActivity extends Activity {
 		};
 		refresherThread.start();
 
+	}
+
+	public void setDataService(CardiovascularDataService service) {
+		dataService.addObserver(this.serviceObserver);
 		dataService.start();
+	}
+
+	@SuppressLint("InflateParams")
+	// TODO (optional) cleanup
+	private void letUserSetServer() {
+
+		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		final View view = inflater.inflate(
+				R.layout.server_address_prompt_dialog, null);
+		dialogBuilder.setView(view);
+		dialogBuilder.setCancelable(true);
+
+		dialogBuilder.setPositiveButton(getResources().getString(R.string.OK),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialogInterface, int id) {
+						try {
+							EditText serverAddressEdit = (EditText) view
+									.findViewById(R.id.serverAddress);
+							EditText serverPortEdit = (EditText) view
+									.findViewById(R.id.serverPort);
+							int port = -1;
+							try {
+								port = Integer.parseInt(serverPortEdit
+										.getText().toString());
+							} catch (NumberFormatException e) {
+								// TODO
+							}
+							dataService = ServiceManager.getInstance(
+									serverAddressEdit.getText().toString(),
+									port).getCardiovascularDataService();
+							setDataService(dataService);
+						} catch (ServiceException e1) {
+							Toast.makeText(
+									MainActivity.this,
+									"Sorry, failed to get data service. Closing.",
+									Toast.LENGTH_LONG).show();
+							MainActivity.this.finish();
+						} catch (NumberFormatException e) {
+							Toast.makeText(
+									MainActivity.this,
+									"Port does not seem to be a number. Closing.",
+									Toast.LENGTH_LONG).show();
+							MainActivity.this.finish();
+						}
+					}
+				});
+
+		dialogBuilder.setNegativeButton(
+				getResources().getString(R.string.Cancel),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialogInterface, int id) {
+						dialogInterface.cancel();
+					}
+				});
+
+		dialogBuilder.create().show();
 
 	}
 

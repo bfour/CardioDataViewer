@@ -50,14 +50,14 @@ public class Application {
 			while (true) {
 
 				long timeDiff = System.currentTimeMillis() - startTime;
-				CardiovascularData data = new CardiovascularData(timeDiff,
-						dataServA.getECG(timeDiff), dataServB.getECG(timeDiff),
-						dataServC.getECG(timeDiff),
+				CardiovascularData data = new CardiovascularData(
+						System.currentTimeMillis(), dataServA.getECG(timeDiff),
+						dataServB.getECG(timeDiff), dataServC.getECG(timeDiff),
 						dataServOxy.getOxy(timeDiff));
 
 				// System.out.println(data);
 
-				insertStatement.setLong(1, timeDiff);
+				insertStatement.setLong(1, data.getTime());
 				insertStatement.setInt(2, data.getECGA());
 				insertStatement.setInt(3, data.getECGB());
 				insertStatement.setInt(4, data.getECGC());

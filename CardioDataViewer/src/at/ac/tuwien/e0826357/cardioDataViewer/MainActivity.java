@@ -1,5 +1,7 @@
 package at.ac.tuwien.e0826357.cardioDataViewer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -15,12 +17,15 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioDataCommons.domain.GenericGetter;
+import at.ac.tuwien.e0826357.cardioDataCommons.domain.Triple;
+import at.ac.tuwien.e0826357.cardioDataCommons.domain.Tuple;
 import at.ac.tuwien.e0826357.cardioDataCommons.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioDataCommons.utils.Utils;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.ServiceManager;
 import at.ac.tuwien.e0826357.cardioDataViewer.util.SystemUiHider;
@@ -28,7 +33,6 @@ import at.ac.tuwien.e0826357.cardioDataViewer.util.SystemUiHider;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
-import com.jjoe64.graphview.GraphViewDataInterface;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
@@ -43,20 +47,21 @@ public class MainActivity extends Activity {
 
 	private static class GraphViewObserver implements Observer {
 
-		private GraphViewSeries series;
+		private List<Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>>> graphsAndSeries;
 		private boolean hasChanged;
+		private long currentXAnchor;
 
-		public GraphViewObserver(GraphViewSeries series) {
-			this.series = series;
+		public GraphViewObserver(
+				List<Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>>> graphsAndSeries) {
+			this.graphsAndSeries = graphsAndSeries;
 			hasChanged = false;
+			currentXAnchor = 0;
 		}
 
 		@Override
 		public void update(Observable obs, Object obj) {
 			// TODO
-			if (obj instanceof GraphViewDataInterface) {
-				update(obs, (GraphViewDataInterface) obj);
-			} else if (obj instanceof CardiovascularData) {
+			if (obj instanceof CardiovascularData) {
 				update(obs, (CardiovascularData) obj);
 			}
 			hasChanged = true;
@@ -66,13 +71,23 @@ public class MainActivity extends Activity {
 		// TODO
 		// }
 		private void update(Observable obs, CardiovascularData data) {
-			series.appendData(
-					new GraphViewData(data.getTime(), data.getECGA()), false,
-					18161);
-		}
-
-		private void update(Observable obs, GraphViewDataInterface data) {
-			series.appendData(data, false, 1861);
+			long x = data.getTime();
+			for (Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries) {
+				triple.getB().appendData(
+						new GraphViewData(x, triple.getC().get(data)), false,
+						VIEWPORT_WIDTH * 2);
+			}
+			if (x > currentXAnchor + VIEWPORT_WIDTH) {
+				if (x > currentXAnchor + VIEWPORT_WIDTH * 2) {
+					// way behind with setting viewpoint -> set to last x
+					currentXAnchor = x + VIEWPORT_WIDTH;
+				} else {
+					// make one VIEWPORT_WIDTH-step
+					currentXAnchor = currentXAnchor + VIEWPORT_WIDTH;
+				}
+				for (Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries)
+					triple.getA().setViewPort(currentXAnchor, VIEWPORT_WIDTH);
+			}
 		}
 
 		public synchronized boolean isHasChangedAndReset() {
@@ -93,6 +108,8 @@ public class MainActivity extends Activity {
 	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
 	private SystemUiHider mSystemUiHider;
 
+	private static final int VIEWPORT_WIDTH = 18161;
+
 	private CardiovascularDataService dataService;
 	private Thread refresherThread;
 	private GraphViewObserver serviceObserver;
@@ -106,22 +123,7 @@ public class MainActivity extends Activity {
 
 		// layout
 		setContentView(R.layout.main_activity);
-		LinearLayout graphLayout = (LinearLayout) findViewById(R.id.graphLayout);
-		this.graph = new LineGraphView(this, "Channel 1");
-
-		graph.setBackgroundColor(Color.WHITE);
-		graph.setViewPort(0, 18161);
-		graph.setScrollable(true);
-		graph.setScalable(false);
-		graph.setShowLegend(false);
-		graph.setLegendAlign(LegendAlign.BOTTOM);
-
-		graph.setManualMaxY(true);
-		graph.setManualMinY(true);
-		graph.setManualYMaxBound(1024);
-		graph.setManualYMinBound(0);
-
-		graphLayout.addView(graph);
+		LinearLayout graphLayout = (LinearLayout) findViewById(R.id.channel1Graph);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 
@@ -192,36 +194,76 @@ public class MainActivity extends Activity {
 		letUserSetServer();
 
 		// logic
-		GraphViewSeries channelOneSeries = new GraphViewSeries(
-				"Channel 1 Signal", new GraphViewSeriesStyle(Color.BLACK, 2),
-				new GraphViewData[] { new GraphViewData(0, 0) });
-		this.graph.addSeries(channelOneSeries);
 
-		serviceObserver = new GraphViewObserver(channelOneSeries);
+		// setup graphs and observe data source
+		List<String> channelNames = new ArrayList<String>();
+		channelNames.add("Channel 1");
+		channelNames.add("Channel 2");
+		channelNames.add("Channel 3");
+		List<Tuple<GraphView, GraphViewSeries>> graphsAndSeries = setupGraphs(
+				graphLayout, channelNames);
+		
+		// serviceObserver = new GraphViewObserver(channelOneSeries, graph);
 
+		// setup graph redrawing
 		final Handler threadHandler = new Handler();
 		final Runnable redrawAction = new Runnable() {
 			@Override
 			public void run() {
-				if (serviceObserver.isHasChangedAndReset())
-					graph.redrawAll();
+				graph.redrawAll();
 			}
 		};
 		refresherThread = new Thread() {
 			@Override
 			public void run() {
 				while (!isInterrupted()) {
-					try {
-						sleep(18);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					if (serviceObserver.isHasChangedAndReset()) {
+						threadHandler.post(redrawAction);
+					} else {
+						// nothing has changed, sleep
+						try {
+							sleep(18);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-					threadHandler.post(redrawAction);
 				}
 			}
 		};
 		refresherThread.start();
+
+	}
+
+	private List<Tuple<GraphView, GraphViewSeries>> setupGraphs(
+			LinearLayout layout, List<String> names) {
+		List<Tuple<GraphView, GraphViewSeries>> list = new ArrayList<Tuple<GraphView, GraphViewSeries>>(
+				names.size());
+		for (String name : names) {
+			// graph
+			GraphView graph = new LineGraphView(this, name);
+			graph.setViewPort(0, VIEWPORT_WIDTH);
+			graph.setScrollable(true);
+			graph.setScalable(false);
+			graph.setShowLegend(false);
+			graph.setLegendAlign(LegendAlign.BOTTOM);
+			graph.setManualMaxY(true);
+			graph.setManualMinY(true);
+			graph.setManualYMaxBound(1024);
+			graph.setManualYMinBound(0);
+			layout.addView(graph);
+			// series
+			GraphViewSeries series = new GraphViewSeries(name,
+					new GraphViewSeriesStyle(Color.WHITE, 1),
+					new GraphViewData[] { new GraphViewData(0, 0) });
+			graph.addSeries(series);
+			// add to list
+			list.add(new Tuple<GraphView, GraphViewSeries>(graph, series));
+		}
+		return list;
+	}
+
+	private void setupRedraw() {
 
 	}
 
@@ -307,7 +349,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-
 		// Trigger the initial hide() shortly after the activity has been
 		// created, to briefly hint to the user that UI controls
 		// are available.

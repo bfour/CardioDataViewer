@@ -23,11 +23,23 @@
     <!-- android:textStyle="bold" /> -->
 
     <LinearLayout
-        android:id="@+id/graphLayout"
+        android:id="@+id/channel1Graph"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/channel2Graph"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/channel3Graph"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </LinearLayout>      
 
     <!--
          This FrameLayout insets its children based on system windows using

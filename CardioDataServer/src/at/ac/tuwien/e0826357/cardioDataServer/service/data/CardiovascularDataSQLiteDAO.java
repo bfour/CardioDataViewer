@@ -48,6 +48,7 @@ public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 			List<CardiovascularData> data = new ArrayList<>();
 			while (result.next()) {
 				long ID = result.getLong(1);
+System.out.println(ID);
 				int ECGA = result.getInt(2);
 				int ECGB = result.getInt(3);
 				int ECGC = result.getInt(4);

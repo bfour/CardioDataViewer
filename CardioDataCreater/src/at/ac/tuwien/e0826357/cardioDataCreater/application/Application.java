@@ -6,8 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
-import at.ac.tuwien.e0826357.cardioDataCreater.service.RandomECGDataService;
+import at.ac.tuwien.e0826357.cardioDataCreater.service.MITECGGenerator.EcgCalc;
+import at.ac.tuwien.e0826357.cardioDataCreater.service.MITECGGenerator.EcgParam;
 
 public class Application {
 
@@ -22,6 +22,8 @@ public class Application {
 			Class.forName("org.sqlite.JDBC");
 			Connection connection = DriverManager
 					.getConnection("jdbc:sqlite:test.db");
+			connection
+					.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
 			Statement dropStatement = connection.createStatement();
 			String dropDataTableSQL = "DROP TABLE IF EXISTS data;";
@@ -38,37 +40,22 @@ public class Application {
 			createStatement.close();
 
 			// insert data
-			RandomECGDataService dataServA = new RandomECGDataService();
-			RandomECGDataService dataServB = new RandomECGDataService();
-			RandomECGDataService dataServC = new RandomECGDataService();
-			RandomECGDataService dataServOxy = new RandomECGDataService();
 			PreparedStatement insertStatement = connection
 					.prepareStatement("INSERT INTO data (ID,ECGA,ECGB,ECGC,oxygenSaturationPerMille) "
 							+ "VALUES (?,?,?,?,?)");
 
-			long startTime = System.currentTimeMillis();
-			while (true) {
-
-				long timeDiff = System.currentTimeMillis() - startTime;
-				CardiovascularData data = new CardiovascularData(
-						System.currentTimeMillis(), dataServA.getECG(timeDiff),
-						dataServB.getECG(timeDiff), dataServC.getECG(timeDiff),
-						dataServOxy.getOxy(timeDiff));
-
-				// System.out.println(data);
-
-				insertStatement.setLong(1, data.getTime());
-				insertStatement.setInt(2, data.getECGA());
-				insertStatement.setInt(3, data.getECGB());
-				insertStatement.setInt(4, data.getECGC());
-				insertStatement.setInt(5, data.getOxygenSaturationPerMille());
-
-				insertStatement.execute();
-				Thread.sleep(1);
-
+			EcgCalc calc = new EcgCalc(new EcgParam(), null);
+			if (!calc.calculateEcg())
+				throw new RuntimeException("calculator failed");
+			for (int i = 0; i < calc.getEcgResultNumRows(); i++) {
+				insertStatement.setLong(1, (long) calc.getEcgResultTime(i));
+				insertStatement.setInt(2, (int) calc.getEcgResultVoltage(i));
+				insertStatement.setInt(3, 0);
+				insertStatement.setInt(4, 0);
+				insertStatement.setInt(5, 0);
 			}
 
-		} catch (SQLException | ClassNotFoundException | InterruptedException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return;
 		}

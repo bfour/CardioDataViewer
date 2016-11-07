@@ -203,7 +203,7 @@ public class MainActivity extends Activity {
 		List<Tuple<GraphView, GraphViewSeries>> graphsAndSeries = setupGraphs(
 				graphLayout, channelNames);
 		
-		// serviceObserver = new GraphViewObserver(channelOneSeries, graph);
+		serviceObserver = new GraphViewObserver(channelOneSeries, graph);
 
 		// setup graph redrawing
 		final Handler threadHandler = new Handler();

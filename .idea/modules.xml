@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CardioDataCommons/CardioDataCommons.iml" filepath="$PROJECT_DIR$/CardioDataCommons/CardioDataCommons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CardioDataServer/CardioDataServer.iml" filepath="$PROJECT_DIR$/CardioDataServer/CardioDataServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CardioDataViewer/CardioDataViewer.iml" filepath="$PROJECT_DIR$/CardioDataViewer/CardioDataViewer.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,6 +1,7 @@
 package at.ac.tuwien.e0826357.cardioDataViewer.service;
 
-import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.series.DataPoint;
+
 
 public class SineTestDataService extends CardiovascularDataService {
 
@@ -90,7 +91,7 @@ public class SineTestDataService extends CardiovascularDataService {
 	private void receive(Long time, Double value) {
 		setChanged();
 //		notifyObservers(new GraphViewData((double) time, value));
-		notifyObservers(new GraphViewData(x++, value));
+		notifyObservers(new DataPoint(x++, value));
 	}
 
 }

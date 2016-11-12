@@ -20,11 +20,11 @@ public class CardiovascularDataMarshaller {
 			CardiovascularData cardioData) {
 		strBuilder.append(cardioData.getTime());
 		strBuilder.append(";");
-		strBuilder.append(cardioData.getECGA());
+		strBuilder.append(cardioData.getLeadI());
 		strBuilder.append(";");
-		strBuilder.append(cardioData.getECGB());
+		strBuilder.append(cardioData.getLeadII());
 		strBuilder.append(";");
-		strBuilder.append(cardioData.getECGC());
+		strBuilder.append(cardioData.getLeadIII());
 		strBuilder.append(";");
 		strBuilder.append(cardioData.getOxygenSaturationPerMille());
 		strBuilder.append("\n");
@@ -33,11 +33,11 @@ public class CardiovascularDataMarshaller {
 	public static CardiovascularData unmarshal(String line) {
 		StringTokenizer tokenizer = new StringTokenizer(line, ";");
 		long time = Long.parseLong(tokenizer.nextToken());
-		int ECGA = Integer.parseInt(tokenizer.nextToken());
-		int ECGB = Integer.parseInt(tokenizer.nextToken());
-		int ECGC = Integer.parseInt(tokenizer.nextToken());
+		int leadI = Integer.parseInt(tokenizer.nextToken());
+		int leadII = Integer.parseInt(tokenizer.nextToken());
+		int leadIII = Integer.parseInt(tokenizer.nextToken());
 		int oxygenSaturationPerMille = Integer.parseInt(tokenizer.nextToken());
-		return new CardiovascularData(time, ECGA, ECGB, ECGC,
+		return new CardiovascularData(time, leadI, leadII, leadIII,
 				oxygenSaturationPerMille);
 	}
 

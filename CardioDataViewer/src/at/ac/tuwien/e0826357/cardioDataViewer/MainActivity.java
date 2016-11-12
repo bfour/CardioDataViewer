@@ -1,16 +1,10 @@
 package at.ac.tuwien.e0826357.cardioDataViewer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,22 +14,24 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
 import at.ac.tuwien.e0826357.cardioDataCommons.domain.CardiovascularData;
 import at.ac.tuwien.e0826357.cardioDataCommons.domain.GenericGetter;
 import at.ac.tuwien.e0826357.cardioDataCommons.domain.Triple;
-import at.ac.tuwien.e0826357.cardioDataCommons.domain.Tuple;
 import at.ac.tuwien.e0826357.cardioDataCommons.service.ServiceException;
-import at.ac.tuwien.e0826357.cardioDataCommons.utils.Utils;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioDataViewer.service.ServiceManager;
 import at.ac.tuwien.e0826357.cardioDataViewer.util.SystemUiHider;
-
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GraphView.GraphViewData;
-import com.jjoe64.graphview.GraphView.LegendAlign;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
-import com.jjoe64.graphview.LineGraphView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -47,12 +43,12 @@ public class MainActivity extends Activity {
 
 	private static class GraphViewObserver implements Observer {
 
-		private List<Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>>> graphsAndSeries;
+		private List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> graphsAndSeries;
 		private boolean hasChanged;
 		private long currentXAnchor;
 
 		public GraphViewObserver(
-				List<Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>>> graphsAndSeries) {
+				List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> graphsAndSeries) {
 			this.graphsAndSeries = graphsAndSeries;
 			hasChanged = false;
 			currentXAnchor = 0;
@@ -72,10 +68,10 @@ public class MainActivity extends Activity {
 		// }
 		private void update(Observable obs, CardiovascularData data) {
 			long x = data.getTime();
-			for (Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries) {
+			for (Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries) {
 				triple.getB().appendData(
-						new GraphViewData(x, triple.getC().get(data)), false,
-						VIEWPORT_WIDTH * 2);
+						new DataPoint(new Date(x), triple.getC().get(data)),
+						true, VIEWPORT_WIDTH * 2);
 			}
 			if (x > currentXAnchor + VIEWPORT_WIDTH) {
 				if (x > currentXAnchor + VIEWPORT_WIDTH * 2) {
@@ -85,8 +81,10 @@ public class MainActivity extends Activity {
 					// make one VIEWPORT_WIDTH-step
 					currentXAnchor = currentXAnchor + VIEWPORT_WIDTH;
 				}
-				for (Triple<GraphView, GraphViewSeries, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries)
-					triple.getA().setViewPort(currentXAnchor, VIEWPORT_WIDTH);
+				// for (Triple<GraphView, LineGraphSeries<DataPoint>,
+				// GenericGetter<CardiovascularData, Double>> triple :
+				// graphsAndSeries)
+				// triple.getA().setViewPort(currentXAnchor, VIEWPORT_WIDTH);
 			}
 		}
 
@@ -196,21 +194,16 @@ public class MainActivity extends Activity {
 		// logic
 
 		// setup graphs and observe data source
-		List<String> channelNames = new ArrayList<String>();
-		channelNames.add("Channel 1");
-		channelNames.add("Channel 2");
-		channelNames.add("Channel 3");
-		List<Tuple<GraphView, GraphViewSeries>> graphsAndSeries = setupGraphs(
-				graphLayout, channelNames);
-		
-		serviceObserver = new GraphViewObserver(channelOneSeries, graph);
+		List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> graphsAndSeries = setupGraphs(graphLayout);
+
+		serviceObserver = new GraphViewObserver(graphsAndSeries);
 
 		// setup graph redrawing
 		final Handler threadHandler = new Handler();
 		final Runnable redrawAction = new Runnable() {
 			@Override
 			public void run() {
-				graph.redrawAll();
+				// TODO
 			}
 		};
 		refresherThread = new Thread() {
@@ -235,31 +228,57 @@ public class MainActivity extends Activity {
 
 	}
 
-	private List<Tuple<GraphView, GraphViewSeries>> setupGraphs(
-			LinearLayout layout, List<String> names) {
-		List<Tuple<GraphView, GraphViewSeries>> list = new ArrayList<Tuple<GraphView, GraphViewSeries>>(
-				names.size());
-		for (String name : names) {
-			// graph
-			GraphView graph = new LineGraphView(this, name);
-			graph.setViewPort(0, VIEWPORT_WIDTH);
-			graph.setScrollable(true);
-			graph.setScalable(false);
-			graph.setShowLegend(false);
-			graph.setLegendAlign(LegendAlign.BOTTOM);
-			graph.setManualMaxY(true);
-			graph.setManualMinY(true);
-			graph.setManualYMaxBound(1024);
-			graph.setManualYMinBound(0);
-			layout.addView(graph);
-			// series
-			GraphViewSeries series = new GraphViewSeries(name,
-					new GraphViewSeriesStyle(Color.WHITE, 1),
-					new GraphViewData[] { new GraphViewData(0, 0) });
-			graph.addSeries(series);
-			// add to list
-			list.add(new Tuple<GraphView, GraphViewSeries>(graph, series));
-		}
+	private List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> setupGraphs(
+			LinearLayout layout) {
+
+		List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> list = new ArrayList<>(
+				3);
+
+		// lead I
+		GraphView graphI = new GraphView(this);
+		layout.addView(graphI);
+		LineGraphSeries<DataPoint> seriesI = new LineGraphSeries<>();
+		seriesI.setTitle("I");
+		graphI.addSeries(seriesI);
+		list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
+				graphI, seriesI,
+				new GenericGetter<CardiovascularData, Double>() {
+					@Override
+					public Double get(CardiovascularData obj) {
+						return (double) obj.getLeadI();
+					}
+				}));
+
+		// lead II
+		GraphView graphII = new GraphView(this);
+		layout.addView(graphII);
+		LineGraphSeries<DataPoint> seriesII = new LineGraphSeries<>();
+		seriesII.setTitle("II");
+		graphII.addSeries(seriesII);
+		list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
+				graphII, seriesII,
+				new GenericGetter<CardiovascularData, Double>() {
+					@Override
+					public Double get(CardiovascularData obj) {
+						return (double) obj.getLeadII();
+					}
+				}));
+
+		// lead III
+		GraphView graphIII = new GraphView(this);
+		layout.addView(graphIII);
+		LineGraphSeries<DataPoint> seriesIII = new LineGraphSeries<>();
+		seriesIII.setTitle("III");
+		graphIII.addSeries(seriesIII);
+		list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
+				graphIII, seriesIII,
+				new GenericGetter<CardiovascularData, Double>() {
+					@Override
+					public Double get(CardiovascularData obj) {
+						return (double) obj.getLeadIII();
+					}
+				}));
+
 		return list;
 	}
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="at.ac.tuwien.e0826357.cardioapp">
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault">
+        <activity
+            android:name="at.ac.tuwien.e0826357.cardioApp.cardioapp.CardioStubBroadcastActivity"
+            android:label="CardioStubBroadcastActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="at.ac.tuwien.e0826357.cardioApp.cardioapp.MainActivity"
+            android:allowEmbedded="true"
+            android:exported="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.DeviceDefault.Light"></activity>
+
+        <receiver
+            android:name="at.ac.tuwien.e0826357.cardioApp.cardioapp.CardioNotificationReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="at.ac.tuwien.e0826357.cardioapp.SHOW_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

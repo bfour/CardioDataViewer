@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CardioDataCommons/CardioDataCommons.iml" filepath="$PROJECT_DIR$/CardioDataCommons/CardioDataCommons.iml" />
-      <module fileurl="file://$PROJECT_DIR$/CardioDataServer/CardioDataServer.iml" filepath="$PROJECT_DIR$/CardioDataServer/CardioDataServer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/CardioDataViewer/CardioDataViewer.iml" filepath="$PROJECT_DIR$/CardioDataViewer/CardioDataViewer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CardioApp.iml" filepath="$PROJECT_DIR$/CardioApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/commons/commons.iml" filepath="$PROJECT_DIR$/commons/commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
     </modules>
   </component>
 </project>

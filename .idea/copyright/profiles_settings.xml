@@ -1,7 +1,8 @@
 <component name="CopyrightManager">
-  <settings default="Apache">
+  <settings default="">
     <module2copyright>
       <element module="MITECGGenerator" copyright="MITECGGenerator" />
+      <element module="Project Files" copyright="Apache" />
     </module2copyright>
   </settings>
 </component>

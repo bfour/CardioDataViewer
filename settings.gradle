@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':commons', ':server'
+include ':mobile', ':wear', ':commons', ':server', ':wearablesimulator'

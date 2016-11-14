@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
-            android:name="at.ac.tuwien.e0826357.cardioApp.cardioapp.CardioStubBroadcastActivity"
+            android:name="at.ac.tuwien.e0826357.cardioapp.cardioapp.CardioStubBroadcastActivity"
             android:label="CardioStubBroadcastActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,14 +20,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="at.ac.tuwien.e0826357.cardioApp.cardioapp.MainActivity"
+            android:name="at.ac.tuwien.e0826357.cardioapp.cardioapp.MainActivity"
             android:allowEmbedded="true"
             android:exported="true"
             android:taskAffinity=""
             android:theme="@android:style/Theme.DeviceDefault.Light"></activity>
 
         <receiver
-            android:name="at.ac.tuwien.e0826357.cardioApp.cardioapp.CardioNotificationReceiver"
+            android:name="at.ac.tuwien.e0826357.cardioapp.cardioapp.CardioNotificationReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="at.ac.tuwien.e0826357.cardioapp.SHOW_NOTIFICATION" />

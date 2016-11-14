@@ -23,6 +23,10 @@ public class SineTestDataService extends CardiovascularDataService {
 			allowedToContinue = false;
 		}
 
+        public void resume() {
+            allowedToContinue = true;
+        }
+
 		@Override
 		public void run() {
 			try {
@@ -66,8 +70,10 @@ public class SineTestDataService extends CardiovascularDataService {
 	private static SineTestDataService instance;
 	private SineGenerator generator;
 	private int x = 1;
+	private boolean isRunning;
 
 	private SineTestDataService() {
+		isRunning = false;
 	}
 
 	public static SineTestDataService getInstance() {
@@ -80,11 +86,18 @@ public class SineTestDataService extends CardiovascularDataService {
 	public void start() {
 		generator = new SineGenerator(this);
 		(new Thread(generator)).start();
+		isRunning = true;
 	}
 
 	@Override
 	public void stop() {
-		generator.stop();
+        generator.stop();
+		isRunning = false;
+	}
+
+	@Override
+	public boolean isRunning() {
+		return isRunning;
 	}
 
 	private void receive(Long time, Double value) {

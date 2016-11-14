@@ -1,4 +1,4 @@
-package at.ac.tuwien.e0826357.cardioApp.server.service.data;
+package at.ac.tuwien.e0826357.cardioapp.server.service.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
 
 public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 

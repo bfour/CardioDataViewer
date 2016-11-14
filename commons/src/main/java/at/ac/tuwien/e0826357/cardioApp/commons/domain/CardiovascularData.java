@@ -1,4 +1,4 @@
-package at.ac.tuwien.e0826357.cardioApp.commons.domain;
+package at.ac.tuwien.e0826357.cardioapp.commons.domain;
 
 public class CardiovascularData {
 

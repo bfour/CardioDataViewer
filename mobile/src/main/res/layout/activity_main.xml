@@ -22,23 +22,20 @@
             android:orientation="vertical"
             android:weightSum="3">
 
-            <View
+            <com.jjoe64.graphview.GraphView
                 android:id="@+id/graph1"
-                class="com.jjoe64.graphview.GraphView"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <View
+            <com.jjoe64.graphview.GraphView
                 android:id="@+id/graph2"
-                class="com.jjoe64.graphview.GraphView"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <View
+            <com.jjoe64.graphview.GraphView
                 android:id="@+id/graph3"
-                class="com.jjoe64.graphview.GraphView"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -65,12 +62,12 @@
             tools:ignore="UselessParent">
 
             <Button
-                android:id="@+id/dummy_button"
+                android:id="@+id/startstop_button"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/start_stop_button" />
+                android:text="@string/start_stop_button_start" />
 
         </LinearLayout>
     </FrameLayout>

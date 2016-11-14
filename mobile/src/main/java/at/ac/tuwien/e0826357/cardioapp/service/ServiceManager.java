@@ -1,6 +1,6 @@
 package at.ac.tuwien.e0826357.cardioapp.service;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
 
 public class ServiceManager {
 

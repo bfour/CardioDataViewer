@@ -1,4 +1,4 @@
-package at.ac.tuwien.e0826357.cardioApp.server.service.data;
+package at.ac.tuwien.e0826357.cardioapp.server.service.data;
 
 import java.util.List;
 

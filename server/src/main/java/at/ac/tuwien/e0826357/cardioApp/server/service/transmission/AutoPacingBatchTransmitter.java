@@ -1,11 +1,11 @@
-package at.ac.tuwien.e0826357.cardioApp.server.service.transmission;
+package at.ac.tuwien.e0826357.cardioapp.server.service.transmission;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.DataLayerException;
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.DataService;
-import at.ac.tuwien.e0826357.cardioApp.server.service.sending.SenderService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.DataLayerException;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.DataService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.sending.SenderService;
 
 class AutoPacingBatchTransmitter<T> implements Runnable {
 

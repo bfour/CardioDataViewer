@@ -1,10 +1,10 @@
-package at.ac.tuwien.e0826357.cardioApp.server.service.sending;
+package at.ac.tuwien.e0826357.cardioapp.server.service.sending;
 
 import java.util.List;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.CardiovascularData;
-import at.ac.tuwien.e0826357.cardioApp.commons.service.CardiovascularDataMarshaller;
-import at.ac.tuwien.e0826357.cardioApp.commons.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.CardiovascularDataMarshaller;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
 
 public class CardiovascularDataTCPSenderService implements
 		SenderService<CardiovascularData> {

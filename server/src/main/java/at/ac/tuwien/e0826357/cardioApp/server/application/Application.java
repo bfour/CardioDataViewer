@@ -1,16 +1,16 @@
-package at.ac.tuwien.e0826357.cardioApp.server.application;
+package at.ac.tuwien.e0826357.cardioapp.server.application;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.CardiovascularData;
-import at.ac.tuwien.e0826357.cardioApp.commons.service.ServiceException;
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.CardiovascularDataSQLiteDAO;
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.CardiovascularDataService;
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.DataLayerException;
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.DataService;
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.Database;
-import at.ac.tuwien.e0826357.cardioApp.server.service.sending.CardiovascularDataTCPSenderService;
-import at.ac.tuwien.e0826357.cardioApp.server.service.sending.SenderService;
-import at.ac.tuwien.e0826357.cardioApp.server.service.transmission.AutoPacingBatchTransmitterService;
-import at.ac.tuwien.e0826357.cardioApp.server.service.transmission.TransmitterService;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.CardiovascularDataSQLiteDAO;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.CardiovascularDataService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.DataLayerException;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.DataService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.Database;
+import at.ac.tuwien.e0826357.cardioapp.server.service.sending.CardiovascularDataTCPSenderService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.sending.SenderService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.transmission.AutoPacingBatchTransmitterService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.transmission.TransmitterService;
 
 public class Application {
 

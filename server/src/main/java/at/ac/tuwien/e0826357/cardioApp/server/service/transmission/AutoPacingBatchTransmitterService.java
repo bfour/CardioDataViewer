@@ -1,7 +1,7 @@
-package at.ac.tuwien.e0826357.cardioApp.server.service.transmission;
+package at.ac.tuwien.e0826357.cardioapp.server.service.transmission;
 
-import at.ac.tuwien.e0826357.cardioApp.server.service.data.DataService;
-import at.ac.tuwien.e0826357.cardioApp.server.service.sending.SenderService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.data.DataService;
+import at.ac.tuwien.e0826357.cardioapp.server.service.sending.SenderService;
 
 public class AutoPacingBatchTransmitterService<T> extends TransmitterService<T> {
 

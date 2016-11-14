@@ -1,11 +1,11 @@
-package at.ac.tuwien.e0826357.cardioApp.commons.utils;
+package at.ac.tuwien.e0826357.cardioapp.commons.utils;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.Triple;
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.Tuple;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.Triple;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.Tuple;
 
 public class Utils {
 

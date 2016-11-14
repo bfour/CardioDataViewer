@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.CardiovascularData;
-import at.ac.tuwien.e0826357.cardioApp.commons.service.CardiovascularDataMarshaller;
-import at.ac.tuwien.e0826357.cardioApp.commons.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.CardiovascularDataMarshaller;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
 
 public class CardiovascularDataTCPReceiverService extends
 		CardiovascularDataService {
@@ -55,25 +55,34 @@ public class CardiovascularDataTCPReceiverService extends
 	private Thread thread;
 	private String serverAddress;
 	private int port;
+    private boolean isRunning;
 
 	public CardiovascularDataTCPReceiverService(String serverAddress, int port)
 			throws ServiceException {
 		this.serverAddress = serverAddress;
 		this.port = port;
+        this.isRunning = false;
 	}
 
 	@Override
-	public void start() {
+	public synchronized void start() {
 		thread = new Thread(new Receiver(this, serverAddress, port));
 		thread.start();
+        this.isRunning = true;
 	}
 
 	@Override
-	public void stop() {
+	public synchronized void stop() {
 		thread.interrupt();
+        this.isRunning = false;
 	}
 
-	private void receive(CardiovascularData data) {
+    @Override
+    public synchronized boolean isRunning() {
+        return isRunning;
+    }
+
+    private synchronized void receive(CardiovascularData data) {
 		setChanged();
 		notifyObservers(data);
 	}

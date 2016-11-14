@@ -7,5 +7,7 @@ public abstract class CardiovascularDataService extends Observable {
 	public abstract void start();
 	
 	public abstract void stop();
+
+    public abstract boolean isRunning();
 	
 }

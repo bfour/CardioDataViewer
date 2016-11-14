@@ -2,8 +2,10 @@ package at.ac.tuwien.e0826357.cardioapp.application;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,14 +13,33 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import at.ac.tuwien.e0826357.cardioapp.R;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.GenericGetter;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.Triple;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioapp.service.CardiovascularDataService;
+import at.ac.tuwien.e0826357.cardioapp.service.GraphViewObserver;
+import at.ac.tuwien.e0826357.cardioapp.service.ServiceManager;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private CardiovascularDataService dataService;
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -110,7 +131,47 @@ public class MainActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.startstop_button).setOnTouchListener(mDelayHideTouchListener);
+
+        // setup graphs etc.
+        GraphViewObserver serviceObserver = new GraphViewObserver(setupGraphs());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        try {
+            String serverAddress = sharedPref.getString("serverAddress", "");
+            Integer serverPort = Integer.parseInt(sharedPref.getString("serverPort", ""));
+            dataService = ServiceManager.getInstance(
+                    serverAddress, serverPort).getCardiovascularDataService();
+            findViewById(R.id.startstop_button).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        if (dataService.isRunning()) {
+                            dataService.stop();
+                            ((Button) findViewById(R.id.startstop_button)).setText(R.string.start_stop_button_start);
+                        } else {
+                            dataService.start();
+                            ((Button) findViewById(R.id.startstop_button)).setText(R.string.start_stop_button_stop);
+                        }
+                    }
+                    return false;
+                }
+            });
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            // TODO implement proper error handling
+            Toast.makeText(
+                    MainActivity.this,
+                    "Sorry, port number seems to be invalid. Closing.",
+                    Toast.LENGTH_LONG).show();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            // TODO implement proper error handling
+            Toast.makeText(
+                    MainActivity.this,
+                    "Sorry, something went wrong. Closing.",
+                    Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
@@ -184,6 +245,56 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> setupGraphs() {
+
+        List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> list = new ArrayList<>(
+                3);
+
+        // lead I
+        GraphView graphI = (GraphView) findViewById(R.id.graph1);
+        LineGraphSeries<DataPoint> seriesI = new LineGraphSeries<>();
+        seriesI.setTitle("I");
+        graphI.addSeries(seriesI);
+        list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
+                graphI, seriesI,
+                new GenericGetter<CardiovascularData, Double>() {
+                    @Override
+                    public Double get(CardiovascularData obj) {
+                        return (double) obj.getLeadI();
+                    }
+                }));
+
+        // lead II
+        GraphView graphII = (GraphView) findViewById(R.id.graph2);
+        LineGraphSeries<DataPoint> seriesII = new LineGraphSeries<>();
+        seriesII.setTitle("II");
+        graphII.addSeries(seriesII);
+        list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
+                graphII, seriesII,
+                new GenericGetter<CardiovascularData, Double>() {
+                    @Override
+                    public Double get(CardiovascularData obj) {
+                        return (double) obj.getLeadII();
+                    }
+                }));
+
+        // lead III
+        GraphView graphIII = (GraphView) findViewById(R.id.graph3);
+        LineGraphSeries<DataPoint> seriesIII = new LineGraphSeries<>();
+        seriesIII.setTitle("III");
+        graphIII.addSeries(seriesIII);
+        list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
+                graphIII, seriesIII,
+                new GenericGetter<CardiovascularData, Double>() {
+                    @Override
+                    public Double get(CardiovascularData obj) {
+                        return (double) obj.getLeadIII();
+                    }
+                }));
+
+        return list;
     }
 
 }

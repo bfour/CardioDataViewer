@@ -1,8 +1,8 @@
-package at.ac.tuwien.e0826357.cardioApp.commons.service;
+package at.ac.tuwien.e0826357.cardioapp.commons.service;
 
 import java.util.StringTokenizer;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
 
 public class CardiovascularDataMarshaller {
 

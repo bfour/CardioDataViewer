@@ -1,4 +1,4 @@
-package at.ac.tuwien.e0826357.cardioApp.commons.service;
+package at.ac.tuwien.e0826357.cardioapp.commons.service;
 
 public class ServiceException extends Exception {
 

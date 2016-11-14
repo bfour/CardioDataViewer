@@ -1,11 +1,11 @@
-package at.ac.tuwien.e0826357.cardioApp.server.service.sending;
+package at.ac.tuwien.e0826357.cardioapp.server.service.sending;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.service.ServiceException;
+import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
 
 public class TCPSenderService {
 

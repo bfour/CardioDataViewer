@@ -1,8 +1,8 @@
-package at.ac.tuwien.e0826357.cardioApp.server.service.data;
+package at.ac.tuwien.e0826357.cardioapp.server.service.data;
 
 import java.util.List;
 
-import at.ac.tuwien.e0826357.cardioApp.commons.domain.CardiovascularData;
+import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
 
 public interface CardiovascularDataDAO {
 

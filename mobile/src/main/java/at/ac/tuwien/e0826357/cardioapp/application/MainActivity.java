@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             String serverAddress = sharedPref.getString("serverAddress", "");
             Integer serverPort = Integer.parseInt(sharedPref.getString("serverPort", ""));
             dataService = ServiceManager.getInstance(
-                    serverAddress, serverPort).getCardiovascularDataService();
+                    serverAddress, serverPort).getCardiovascularDataService(MainActivity.this);
             findViewById(R.id.startstop_button).setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {

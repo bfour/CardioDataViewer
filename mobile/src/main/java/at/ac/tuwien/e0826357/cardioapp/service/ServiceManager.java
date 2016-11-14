@@ -16,6 +16,8 @@
 
 package at.ac.tuwien.e0826357.cardioapp.service;
 
+import android.content.Context;
+
 import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
 
 public class ServiceManager {
@@ -36,9 +38,9 @@ public class ServiceManager {
 		return instance;
 	}
 
-	public CardiovascularDataService getCardiovascularDataService() throws ServiceException {
+	public CardiovascularDataService getCardiovascularDataService(Context context) throws ServiceException {
 		// return SineTestDataService.getInstance();
-		return new CardiovascularDataTCPReceiverService(serverURL, serverPort);
+		return new CardiovascularDataTCPReceiverService(context, serverURL, serverPort);
 	}
 
 }

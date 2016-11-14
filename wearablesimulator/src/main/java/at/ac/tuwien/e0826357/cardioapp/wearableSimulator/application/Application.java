@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import at.ac.tuwien.e0826357.cardioapp.wearableSimulator.service.MITECGGenerator.EcgCalc;
+import at.ac.tuwien.e0826357.cardioapp.wearableSimulator.service.MITECGGenerator.EcgLogWindow;
 import at.ac.tuwien.e0826357.cardioapp.wearableSimulator.service.MITECGGenerator.EcgParam;
 
 public class Application {
@@ -38,8 +39,8 @@ public class Application {
 			Class.forName("org.sqlite.JDBC");
 			Connection connection = DriverManager
 					.getConnection("jdbc:sqlite:test.db");
-			connection
-					.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			//connection
+			//		.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
 			Statement dropStatement = connection.createStatement();
 			String dropDataTableSQL = "DROP TABLE IF EXISTS data;";
@@ -60,15 +61,24 @@ public class Application {
 					.prepareStatement("INSERT INTO data (ID,ECGA,ECGB,ECGC,oxygenSaturationPerMille) "
 							+ "VALUES (?,?,?,?,?)");
 
-			EcgCalc calc = new EcgCalc(new EcgParam(), null);
-			if (!calc.calculateEcg())
-				throw new RuntimeException("calculator failed");
-			for (int i = 0; i < calc.getEcgResultNumRows(); i++) {
-				insertStatement.setLong(1, (long) calc.getEcgResultTime(i));
-				insertStatement.setInt(2, (int) calc.getEcgResultVoltage(i));
-				insertStatement.setInt(3, 0);
-				insertStatement.setInt(4, 0);
-				insertStatement.setInt(5, 0);
+			EcgParam params = new EcgParam();
+			params.setN(861); // num of heartbeats
+            EcgLogWindow logWindow = new EcgLogWindow();
+            logWindow.setVisible(true);
+            long startTime = System.currentTimeMillis();
+			while (true) {
+				EcgCalc calc1 = new EcgCalc(params, logWindow);
+				EcgCalc calc2 = new EcgCalc(params, logWindow);
+				EcgCalc calc3 = new EcgCalc(params, logWindow);
+				if (!calc1.calculateEcg() || !calc2.calculateEcg() || !calc3.calculateEcg())
+					throw new RuntimeException("calculator failed");
+				for (int i = 0; i < calc1.getEcgResultNumRows(); i++) {
+					insertStatement.setLong(1, startTime + (long) calc1.getEcgResultTimeSec(i)/1000);
+					insertStatement.setInt(2, (int) calc1.getEcgResultVoltage(i));
+					insertStatement.setInt(3, (int) calc2.getEcgResultVoltage(i));
+					insertStatement.setInt(4, (int) calc3.getEcgResultVoltage(i));
+					insertStatement.setInt(5, 0);
+				}
 			}
 
 		} catch (SQLException | ClassNotFoundException e) {

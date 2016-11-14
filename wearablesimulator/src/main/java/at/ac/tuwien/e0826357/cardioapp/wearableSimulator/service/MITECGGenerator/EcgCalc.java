@@ -65,7 +65,7 @@ public class EcgCalc {
         return ecgResultNumRows;
     }
 
-    public double getEcgResultTime(int index){
+    public double getEcgResultTimeSec(int index){
         return ecgResultTime[index];
     }
 
@@ -560,37 +560,37 @@ public class EcgCalc {
         //x=dvector(1,mstate);
         x= new double[4];
 
-//        ecgLog.println("Approximate number of heart beats: " + paramOb.getN());
-//        ecgLog.println("ECG sampling frequency: " + paramOb.getSfEcg() + " Hertz");
-//        ecgLog.println("Internal sampling frequency: " + paramOb.getSf() + " Hertz");
-//        ecgLog.println("Amplitude of additive uniformly distributed noise: " + paramOb.getANoise() + " mV");
-//        ecgLog.println("Heart rate mean: " + paramOb.getHrMean() + " beats per minute");
-//        ecgLog.println("Heart rate std: " + paramOb.getHrStd() + " beats per minute");
-//        ecgLog.println("Low frequency: " + paramOb.getFLo() + " Hertz");
-//        ecgLog.println("High frequency std: " + paramOb.getFHiStd() + " Hertz");
-//        ecgLog.println("Low frequency std: " + paramOb.getFLoStd() + " Hertz");
-//        ecgLog.println("High frequency: " + paramOb.getFHi() + " Hertz");
-//        ecgLog.println("LF/HF ratio: " + paramOb.getLfHfRatio());
-//        ecgLog.println("time step milliseconds: " + paramOb.getEcgAnimateInterval() + "\n");
-//        ecgLog.println("Order of Extrema:");
-//        ecgLog.println("      theta(radians)");
-//        ecgLog.println("P: ["+ ti[1] + "\t]");
-//        ecgLog.println("Q: ["+ ti[2] + "\t]");
-//        ecgLog.println("R: ["+ ti[3] + "\t]");
-//        ecgLog.println("S: ["+ ti[4] + "\t]");
-//        ecgLog.println("T: ["+ ti[5] + "\t]\n");
-//        ecgLog.println("      a(calculated)");
-//        ecgLog.println("P: ["+ ai[1] + "\t]");
-//        ecgLog.println("Q: ["+ ai[2] + "\t]");
-//        ecgLog.println("R: ["+ ai[3] + "\t]");
-//        ecgLog.println("S: ["+ ai[4] + "\t]");
-//        ecgLog.println("T: ["+ ai[5] + "\t]\n");
-//        ecgLog.println("      b(calculated)");
-//        ecgLog.println("P: ["+ bi[1] + "\t]");
-//        ecgLog.println("Q: ["+ bi[2] + "\t]");
-//        ecgLog.println("R: ["+ bi[3] + "\t]");
-//        ecgLog.println("S: ["+ bi[4] + "\t]");
-//        ecgLog.println("T: ["+ bi[5] + "\t]\n");
+        ecgLog.println("Approximate number of heart beats: " + paramOb.getN());
+        ecgLog.println("ECG sampling frequency: " + paramOb.getSfEcg() + " Hertz");
+        ecgLog.println("Internal sampling frequency: " + paramOb.getSf() + " Hertz");
+        ecgLog.println("Amplitude of additive uniformly distributed noise: " + paramOb.getANoise() + " mV");
+        ecgLog.println("Heart rate mean: " + paramOb.getHrMean() + " beats per minute");
+        ecgLog.println("Heart rate std: " + paramOb.getHrStd() + " beats per minute");
+        ecgLog.println("Low frequency: " + paramOb.getFLo() + " Hertz");
+        ecgLog.println("High frequency std: " + paramOb.getFHiStd() + " Hertz");
+        ecgLog.println("Low frequency std: " + paramOb.getFLoStd() + " Hertz");
+        ecgLog.println("High frequency: " + paramOb.getFHi() + " Hertz");
+        ecgLog.println("LF/HF ratio: " + paramOb.getLfHfRatio());
+        ecgLog.println("time step milliseconds: " + paramOb.getEcgAnimateInterval() + "\n");
+        ecgLog.println("Order of Extrema:");
+        ecgLog.println("      theta(radians)");
+        ecgLog.println("P: ["+ ti[1] + "\t]");
+        ecgLog.println("Q: ["+ ti[2] + "\t]");
+        ecgLog.println("R: ["+ ti[3] + "\t]");
+        ecgLog.println("S: ["+ ti[4] + "\t]");
+        ecgLog.println("T: ["+ ti[5] + "\t]\n");
+        ecgLog.println("      a(calculated)");
+        ecgLog.println("P: ["+ ai[1] + "\t]");
+        ecgLog.println("Q: ["+ ai[2] + "\t]");
+        ecgLog.println("R: ["+ ai[3] + "\t]");
+        ecgLog.println("S: ["+ ai[4] + "\t]");
+        ecgLog.println("T: ["+ ai[5] + "\t]\n");
+        ecgLog.println("      b(calculated)");
+        ecgLog.println("P: ["+ bi[1] + "\t]");
+        ecgLog.println("Q: ["+ bi[2] + "\t]");
+        ecgLog.println("R: ["+ bi[3] + "\t]");
+        ecgLog.println("S: ["+ bi[4] + "\t]");
+        ecgLog.println("T: ["+ bi[5] + "\t]\n");
 
         /* Initialise the vector */
         x[1] = xinitial; 

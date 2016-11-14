@@ -653,7 +653,7 @@ public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener 
         // Delete the DataTable
         for(int i=0;i<calcOb.getEcgResultNumRows();i++){
             Vector nuevoRow = new Vector(3);
-            nuevoRow.addElement(new String(Double.toString(calcOb.getEcgResultTime(i))));
+            nuevoRow.addElement(new String(Double.toString(calcOb.getEcgResultTimeSec(i))));
             nuevoRow.addElement(new String(Double.toString(calcOb.getEcgResultVoltage(i))));
             nuevoRow.addElement(new String(Integer.toString(calcOb.getEcgResultPeak(i))));
             tableValuesModel.addRow(nuevoRow);

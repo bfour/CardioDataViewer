@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="MITECGGenerator" pattern="src[wearablesimulator]:at.ac.tuwien.e0826357.cardioapp.wearableSimulator.service.MITECGGenerator.*" />
+</component>

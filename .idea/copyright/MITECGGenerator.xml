@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="keyword" value="Java ECG Generator License file" />
+    <option name="myName" value="MITECGGenerator" />
+    <option name="notice" value="Java ECG Generator License file.&#10;This license applies to all files and components for Java ECG Generator.&#10;&#10;Java ECG Generator&#10;© Java Code Copyright(C) 2004 Mauricio Villarroel (m.villarroel@acm.org)        &#10;&#10;Java ECG Generator was developed for ECGSYN:&#10;&#10;© ECGSYN Copyright by Patrick E. McSharry and Gari D. Clifford. &#10;For the Mathematical Model, see:&#10;      IEEE Transactions On Biomedical Engineering, 50(3), 289-294, March 2003&#10;&#10;Contact: &#10;     - Patrck McSharry (patrick@mcsharry.net)&#10;     - Gari Clifford (gari@mit.edu) &#10;&#10;&#10;&#10;Java ECG Generator and all its components are free software. You can redistribute&#10;them or modify it under the terms of the GNU General Public License&#10;as published by the Free Software Foundation; either version 2 of the License,&#10;or (at your option) any later version. (See the GNU General Public License&#10;for more details.)&#10;&#10;This file is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;&#10;without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE." />
+  </copyright>
+</component>

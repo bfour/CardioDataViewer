@@ -11,17 +11,25 @@ package at.ac.tuwien.e0826357.cardioapp.wearableSimulator.service.MITECGGenerato
  * @author  Mauricio Villarroel (m.villarroel@acm.og)
  */
 
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-import javax.swing.table.*;
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.*;
-import java.awt.event.*;
-import java.lang.Math.*;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+
+import javax.swing.JInternalFrame;
+import javax.swing.table.DefaultTableModel;
 
 public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener {
     
@@ -198,7 +206,7 @@ public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener 
         jLabel3.setText("Generate:");
         plotToolBar.add(jLabel3);
 
-        generateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/execute2.gif")));
+        //generateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/execute2.gif")));
         generateButton.setToolTipText("Generate System");
         generateButton.setMaximumSize(new Dimension(22, 22));
         generateButton.setMinimumSize(new Dimension(22, 22));
@@ -217,7 +225,7 @@ public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener 
         jLabel2.setText("Zoom:");
         plotToolBar.add(jLabel2);
 
-        zoomInButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/tbzoomin.png")));
+//        zoomInButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/tbzoomin.png")));
         zoomInButton.setToolTipText("Zoom In");
         zoomInButton.setMargin(new Insets(0, 0, 0, 0));
         zoomInButton.setMaximumSize(new Dimension(22, 22));
@@ -231,7 +239,7 @@ public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener 
 
         plotToolBar.add(zoomInButton);
 
-        zoomOutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/tbzoomout.png")));
+//        zoomOutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/tbzoomout.png")));
         zoomOutButton.setToolTipText("Zoom Out");
         zoomOutButton.setMaximumSize(new Dimension(22, 22));
         zoomOutButton.setMinimumSize(new Dimension(22, 22));
@@ -250,7 +258,7 @@ public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener 
         jLabel1.setText("Animate:");
         plotToolBar.add(jLabel1);
 
-        animateStartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/ball_green.gif")));
+//        animateStartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/ball_green.gif")));
         animateStartButton.setToolTipText("Start Animation");
         animateStartButton.setMaximumSize(new Dimension(22, 22));
         animateStartButton.setMinimumSize(new Dimension(22, 22));
@@ -263,7 +271,7 @@ public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener 
 
         plotToolBar.add(animateStartButton);
 
-        animateStopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/ball_red.gif")));
+//        animateStopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/ball_red.gif")));
         animateStopButton.setToolTipText("Stop Animation");
         animateStopButton.setMaximumSize(new Dimension(22, 22));
         animateStopButton.setMinimumSize(new Dimension(22, 22));
@@ -334,7 +342,7 @@ public class EcgPlotWindow extends JInternalFrame implements AdjustmentListener 
         mainPanel.add(closeButton);
         closeButton.setBounds(750, 380, 80, 25);
 
-        exportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/disk.gif")));
+//        exportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("img/disk.gif")));
         exportButton.setText("Export Data...");
         exportButton.setToolTipText("Export Table Data to a File");
         exportButton.setIconTextGap(15);

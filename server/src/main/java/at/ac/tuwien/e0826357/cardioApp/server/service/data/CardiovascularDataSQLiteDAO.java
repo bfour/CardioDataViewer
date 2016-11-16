@@ -33,13 +33,13 @@ public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 
 	public CardiovascularDataSQLiteDAO(Database db) {
 		this.conn = db.getConn();
-		try {
-			this.conn
-					.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			this.conn
+//					.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -72,10 +72,10 @@ public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 			while (result.next()) {
 				long ID = result.getLong(1);
 				System.out.println(ID);
-				int ECGA = result.getInt(2);
-				int ECGB = result.getInt(3);
-				int ECGC = result.getInt(4);
-				int oxygenSaturationPerMille = result.getInt(5);
+				double ECGA = result.getDouble(2);
+				double ECGB = result.getDouble(3);
+				double ECGC = result.getDouble(4);
+				double oxygenSaturationPerMille = result.getDouble(5);
 				data.add(new CardiovascularData(ID, ECGA, ECGB, ECGC,
 						oxygenSaturationPerMille));
 			}

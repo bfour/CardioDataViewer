@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import at.ac.tuwien.e0826357.cardioapp.commons.domain.CardiovascularData;
 import at.ac.tuwien.e0826357.cardioapp.commons.service.CardiovascularDataMarshaller;
 import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
 
@@ -37,24 +36,21 @@ public class CardiovascularDataTCPReceiverService extends
 
     private static class Receiver implements Runnable {
 
-        private final Handler notifHandler;
+        private final Handler toastHandler;
+        private final GraphViewObserver observer;
         private Context context;
         private CardiovascularDataTCPReceiverService serv;
         private int port;
         private String serverAddress;
 
-        public Receiver(final Context context, CardiovascularDataTCPReceiverService serv,
-                        String serverAddress, int port) {
+        public Receiver(Handler toastHandler, CardiovascularDataTCPReceiverService serv,
+                        String serverAddress, int port, GraphViewObserver observer) {
             this.context = context;
             this.serv = serv;
             this.serverAddress = serverAddress;
             this.port = port;
-            notifHandler = new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message message) {
-                    Toast.makeText(context, message.getData().getString("message"), Toast.LENGTH_LONG).show();
-                }
-            };
+            this.observer = observer;
+            this.toastHandler = toastHandler;
         }
 
         @Override
@@ -66,7 +62,7 @@ public class CardiovascularDataTCPReceiverService extends
                 BufferedReader inboundStream = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
                 while ((line = inboundStream.readLine()) != null) {
-                    serv.receive(CardiovascularDataMarshaller.unmarshal(line));
+                    observer.update(CardiovascularDataMarshaller.unmarshal(line));
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -74,9 +70,9 @@ public class CardiovascularDataTCPReceiverService extends
                 // TODO Can't create handler inside thread that has not called Looper.prepare
                 Bundle bundle = new Bundle();
                 bundle.putString("message", "IOException: " + e.getMessage() + ". Closing.");
-                Message message = new Message();
+                Message message = toastHandler.obtainMessage();
                 message.setData(bundle);
-                notifHandler.handleMessage(message);
+                message.sendToTarget();
             } finally {
                 if (socket != null)
                     try {
@@ -86,32 +82,39 @@ public class CardiovascularDataTCPReceiverService extends
                         e.printStackTrace();
                         Bundle bundle = new Bundle();
                         bundle.putString("message", "Closing socket failed.");
-                        Message message = new Message();
+                        Message message = toastHandler.obtainMessage();
                         message.setData(bundle);
-                        notifHandler.handleMessage(message);
+                        message.sendToTarget();
                     }
             }
         }
 
     }
 
+    private final Handler toastHandler;
     private Thread thread;
-    private Context context;
     private String serverAddress;
     private int port;
+    private GraphViewObserver observer;
     private boolean isRunning;
 
-    public CardiovascularDataTCPReceiverService(Context context, String serverAddress, int port)
+    public CardiovascularDataTCPReceiverService(final Context context, String serverAddress, int port, GraphViewObserver observer)
             throws ServiceException {
-        this.context = context;
+        this.toastHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                Toast.makeText(context, message.getData().getString("message"), Toast.LENGTH_LONG).show();
+            }
+        };
         this.serverAddress = serverAddress;
         this.port = port;
+        this.observer = observer;
         this.isRunning = false;
     }
 
     @Override
     public synchronized void start() {
-        thread = new Thread(new Receiver(context, this, serverAddress, port));
+        thread = new Thread(new Receiver(toastHandler, this, serverAddress, port, observer));
         thread.start();
         this.isRunning = true;
     }
@@ -125,11 +128,6 @@ public class CardiovascularDataTCPReceiverService extends
     @Override
     public synchronized boolean isRunning() {
         return isRunning;
-    }
-
-    private synchronized void receive(CardiovascularData data) {
-        setChanged();
-        notifyObservers(data);
     }
 
 }

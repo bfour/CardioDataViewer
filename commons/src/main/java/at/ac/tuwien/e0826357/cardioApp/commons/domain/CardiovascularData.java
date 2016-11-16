@@ -19,13 +19,13 @@ package at.ac.tuwien.e0826357.cardioapp.commons.domain;
 public class CardiovascularData {
 
 	private long time;
-	private int leadI;
-	private int leadII;
-	private int leadIII;
-	private int oxygenSaturationPerMille;
-	
-	public CardiovascularData(long time, int leadI, int leadII, int leadIII,
-			int oxygenSaturationPerMille) {
+	private double leadI;
+	private double leadII;
+	private double leadIII;
+	private double oxygenSaturationPerMille;
+
+	public CardiovascularData(long time, double leadI, double leadII, double leadIII,
+							  double oxygenSaturationPerMille) {
 		this.time = time;
 		this.leadI = leadI;
 		this.leadII = leadII;
@@ -37,19 +37,19 @@ public class CardiovascularData {
 		return time;
 	}
 	
-	public int getLeadI() {
+	public double getLeadI() {
 		return leadI;
 	}
 
-	public int getLeadII() {
+	public double getLeadII() {
 		return leadII;
 	}
 
-	public int getLeadIII() {
+	public double getLeadIII() {
 		return leadIII;
 	}
 
-	public int getOxygenSaturationPerMille() {
+	public double getOxygenSaturationPerMille() {
 		return oxygenSaturationPerMille;
 	}
 

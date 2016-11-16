@@ -171,7 +171,7 @@ public class EcgExportWindow extends javax.swing.JDialog {
                 FileWriter fw = new FileWriter(file);
                 fw.write("Time"+ car +"Voltage"+ car +"Peak\r\n");
                 for(int i= 0; i < calcOb.getEcgResultNumRows(); i++){
-                    fw.write(Double.toString(calcOb.getEcgResultTimeSec(i)) + car + Double.toString(calcOb.getEcgResultVoltage(i)) + car + Integer.toString(calcOb.getEcgResultPeak(i)) + "\r\n");
+                    fw.write(Double.toString(calcOb.getEcgResultTimeSec(i)) + car + Double.toString(calcOb.getEcgResultVoltageMilV(i)) + car + Integer.toString(calcOb.getEcgResultPeak(i)) + "\r\n");
                 }
                 fw.close();
                 JOptionPane.showMessageDialog(this, "it was generated " + calcOb.getEcgResultNumRows() + " rows.\nFile was saved successfully!");

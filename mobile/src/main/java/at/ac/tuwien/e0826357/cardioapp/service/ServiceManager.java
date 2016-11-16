@@ -38,9 +38,9 @@ public class ServiceManager {
 		return instance;
 	}
 
-	public CardiovascularDataService getCardiovascularDataService(Context context) throws ServiceException {
+	public CardiovascularDataService getCardiovascularDataService(Context context, GraphViewObserver serviceObserver) throws ServiceException {
 		// return SineTestDataService.getInstance();
-		return new CardiovascularDataTCPReceiverService(context, serverURL, serverPort);
+		return new CardiovascularDataTCPReceiverService(context, serverURL, serverPort, serviceObserver);
 	}
 
 }

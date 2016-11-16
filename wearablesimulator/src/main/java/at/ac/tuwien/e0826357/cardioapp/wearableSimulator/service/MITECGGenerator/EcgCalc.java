@@ -69,7 +69,11 @@ public class EcgCalc {
         return ecgResultTime[index];
     }
 
-    public double getEcgResultVoltage(int index){
+    public long getEcgResultTimeMSec(int index) {
+        return ecgResultTimeMSec[index];
+    }
+
+    public double getEcgResultVoltageMilV(int index){
         return ecgResultVoltage[index];
     }
 
@@ -118,6 +122,7 @@ public class EcgCalc {
      * ECG Result Variables
      */
     /* Result Vectors*/
+    private long[] ecgResultTimeMSec;
     private double[] ecgResultTime;
     private double[] ecgResultVoltage;
     private int[] ecgResultPeak;
@@ -528,6 +533,7 @@ public class EcgCalc {
         int q;
         double[] x;
         double tstep, tecg, rrmean, hrfact, hrfact2;
+        double timeStepMSec;
         double qd;
         double[] xt, yt, zt, xts, yts, zts;
         double timev, zmin, zmax, zrange;
@@ -603,6 +609,7 @@ public class EcgCalc {
         /* calculate time scales */
         h = 1.0/(double)paramOb.getSf();
         tstep = 1.0/(double)paramOb.getSfEcg();
+        timeStepMSec = 1000/paramOb.getSfEcg();
 
         /* calculate length of RR time series */            
         rrmean = (60.0/paramOb.getHrMean());
@@ -684,13 +691,15 @@ public class EcgCalc {
 //        ecgLog.println("Generating result matrix...");
         
         ecgResultNumRows = Nts;
-        
+
         ecgResultTime = new double[ecgResultNumRows];
+        ecgResultTimeMSec = new long[ecgResultNumRows];
         ecgResultVoltage = new double[ecgResultNumRows];
         ecgResultPeak = new int[ecgResultNumRows];
         
         for(i=1;i<=Nts;i++){
             ecgResultTime[i-1] = (i-1)*tstep;
+            ecgResultTimeMSec[i-1] = (long) ((i-1)*timeStepMSec);
             ecgResultVoltage[i-1] = zts[i];
             ecgResultPeak[i-1] = (int)ipeak[i];
             /*

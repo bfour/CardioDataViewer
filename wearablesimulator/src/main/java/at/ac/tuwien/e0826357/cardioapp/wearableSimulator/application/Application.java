@@ -50,9 +50,9 @@ public class Application {
 			Statement createStatement = connection.createStatement();
 			String createDataTableSQL = "CREATE TABLE IF NOT EXISTS data "
 					+ "(ID LONG PRIMARY KEY NOT NULL, "
-					+ "ECGA INTEGER NOT NULL, " + "ECGB INTEGER NOT NULL, "
-					+ "ECGC INTEGER NOT NULL, "
-					+ "oxygenSaturationPerMille INTEGER NOT NULL);";
+					+ "ECGA DOUBLE NOT NULL, " + "ECGB DOUBLE NOT NULL, "
+					+ "ECGC DOUBLE NOT NULL, "
+					+ "oxygenSaturationPerMille DOUBLE NOT NULL);";
 			createStatement.executeUpdate(createDataTableSQL);
 			createStatement.close();
 
@@ -62,7 +62,7 @@ public class Application {
 							+ "VALUES (?,?,?,?,?)");
 
 			EcgParam params = new EcgParam();
-			params.setN(861); // num of heartbeats
+			// params.setN(861); // num of heartbeats
             EcgLogWindow logWindow = new EcgLogWindow();
             logWindow.setVisible(true);
             long startTime = System.currentTimeMillis();
@@ -72,12 +72,18 @@ public class Application {
 				EcgCalc calc3 = new EcgCalc(params, logWindow);
 				if (!calc1.calculateEcg() || !calc2.calculateEcg() || !calc3.calculateEcg())
 					throw new RuntimeException("calculator failed");
+				long lastResultTime = -1;
 				for (int i = 0; i < calc1.getEcgResultNumRows(); i++) {
-					insertStatement.setLong(1, startTime + (long) calc1.getEcgResultTimeSec(i)/1000);
-					insertStatement.setInt(2, (int) calc1.getEcgResultVoltage(i));
-					insertStatement.setInt(3, (int) calc2.getEcgResultVoltage(i));
-					insertStatement.setInt(4, (int) calc3.getEcgResultVoltage(i));
-					insertStatement.setInt(5, 0);
+					long resultTime = calc1.getEcgResultTimeMSec(i);
+					if (resultTime == lastResultTime)
+						continue;
+					lastResultTime = resultTime;
+					insertStatement.setLong(1, startTime + resultTime);
+					insertStatement.setDouble(2, calc1.getEcgResultVoltageMilV(i));
+					insertStatement.setDouble(3, calc2.getEcgResultVoltageMilV(i));
+					insertStatement.setDouble(4, calc3.getEcgResultVoltageMilV(i));
+					insertStatement.setDouble(5, 0);
+					insertStatement.execute();
 				}
 			}
 

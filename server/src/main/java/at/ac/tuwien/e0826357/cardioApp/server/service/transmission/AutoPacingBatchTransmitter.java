@@ -26,8 +26,8 @@ import at.ac.tuwien.e0826357.cardioapp.server.service.sending.SenderService;
 class AutoPacingBatchTransmitter<T> implements Runnable {
 
 	private static final int MIN_THREAD_PAUSE_INMSEC = 18;
-	private static final int MAX_THREAD_PAUSE_INMSEC = 186;
-	private static final int AUTO_PACE_STEP_IN_MS = 16;
+	private static final int MAX_THREAD_PAUSE_INMSEC = 486;
+	private static final int AUTO_PACE_STEP_IN_MS = 46;
 
 	private DataService<T> dataServ;
 	private SenderService<T> senderServ;

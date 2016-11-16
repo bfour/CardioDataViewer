@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             String serverAddress = sharedPref.getString("serverAddress", "");
             Integer serverPort = Integer.parseInt(sharedPref.getString("serverPort", ""));
             dataService = ServiceManager.getInstance(
-                    serverAddress, serverPort).getCardiovascularDataService(MainActivity.this);
+                    serverAddress, serverPort).getCardiovascularDataService(MainActivity.this, serviceObserver);
             findViewById(R.id.startstop_button).setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -270,6 +270,15 @@ public class MainActivity extends AppCompatActivity {
 
         // lead I
         GraphView graphI = (GraphView) findViewById(R.id.graph1);
+        // graphI.getGridLabelRenderer().set
+        graphI.getViewport().setXAxisBoundsManual(true);
+        graphI.getViewport().setMinX(System.currentTimeMillis());
+        graphI.getViewport().setMinX(System.currentTimeMillis());
+        graphI.setTitle("I");
+        graphI.setHorizontalScrollBarEnabled(true);
+        graphI.getViewport().setMinY(-1);
+        graphI.setSoundEffectsEnabled(true);
+        graphI.getViewport().setMaxY(1);
         LineGraphSeries<DataPoint> seriesI = new LineGraphSeries<>();
         seriesI.setTitle("I");
         graphI.addSeries(seriesI);
@@ -284,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
         // lead II
         GraphView graphII = (GraphView) findViewById(R.id.graph2);
+        graphII.setTitle("II");
         LineGraphSeries<DataPoint> seriesII = new LineGraphSeries<>();
         seriesII.setTitle("II");
         graphII.addSeries(seriesII);
@@ -298,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
         // lead III
         GraphView graphIII = (GraphView) findViewById(R.id.graph3);
+        graphIII.setTitle("III");
         LineGraphSeries<DataPoint> seriesIII = new LineGraphSeries<>();
         seriesIII.setTitle("III");
         graphIII.addSeries(seriesIII);

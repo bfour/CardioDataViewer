@@ -48,6 +48,8 @@ import at.ac.tuwien.e0826357.cardioapp.service.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioapp.service.GraphViewObserver;
 import at.ac.tuwien.e0826357.cardioapp.service.ServiceManager;
 
+import static at.ac.tuwien.e0826357.cardioapp.R.id.graph2;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -316,11 +318,16 @@ public class MainActivity extends AppCompatActivity {
                 }));
 
         // lead II
-        GraphView graphII = (GraphView) findViewById(R.id.graph2);
+        GraphView graphII = (GraphView) findViewById(graph2);
         graphII.setTitle("II");
         LineGraphSeries<DataPoint> seriesII = new LineGraphSeries<>();
-        seriesII.setTitle("II");
         graphII.addSeries(seriesII);
+        graphII.getViewport().setXAxisBoundsManual(true);
+        graphII.getViewport().setMinX(0);
+        graphII.getViewport().setMaxX(700);
+        graphII.getViewport().setYAxisBoundsManual(true);
+        graphII.getViewport().setMinY(-1);
+        graphII.getViewport().setMaxY(1.5);
         list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
                 graphII, seriesII,
                 new GenericGetter<CardiovascularData, Double>() {

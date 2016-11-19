@@ -49,10 +49,10 @@ public class CardiovascularDataMarshaller {
 	public static CardiovascularData unmarshal(String line) {
 		StringTokenizer tokenizer = new StringTokenizer(line, ";");
 		long time = Long.parseLong(tokenizer.nextToken());
-		int leadI = Integer.parseInt(tokenizer.nextToken());
-		int leadII = Integer.parseInt(tokenizer.nextToken());
-		int leadIII = Integer.parseInt(tokenizer.nextToken());
-		int oxygenSaturationPerMille = Integer.parseInt(tokenizer.nextToken());
+		double leadI = Double.parseDouble(tokenizer.nextToken());
+		double leadII = Double.parseDouble(tokenizer.nextToken());
+		double leadIII = Double.parseDouble(tokenizer.nextToken());
+		double oxygenSaturationPerMille = Double.parseDouble(tokenizer.nextToken());
 		return new CardiovascularData(time, leadI, leadII, leadIII,
 				oxygenSaturationPerMille);
 	}

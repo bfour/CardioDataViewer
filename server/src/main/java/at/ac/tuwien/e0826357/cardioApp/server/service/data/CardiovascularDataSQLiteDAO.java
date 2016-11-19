@@ -51,7 +51,7 @@ public class CardiovascularDataSQLiteDAO implements CardiovascularDataDAO {
 			try {
 				getAllAfterPrepStatement = conn
 						.prepareStatement("SELECT ID, ECGA, ECGB, ECGC, oxygenSaturationPerMille "
-								+ "FROM data WHERE ID > ?;");
+								+ "FROM data WHERE ID > ? LIMIT 2000;");
 			} catch (SQLException e) {
 				throw new DataLayerException("failed to prepare statement", e);
 			}

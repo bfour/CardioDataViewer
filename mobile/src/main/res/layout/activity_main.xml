@@ -24,16 +24,18 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <GridLayout
+    <!--<GridLayout
         android:id="@+id/graphs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:keepScreenOn="true">
+        android:keepScreenOn="true">-->
 
         <LinearLayout
+            android:id="@+id/graphs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:keepScreenOn="true"
             android:gravity="center"
             android:orientation="vertical"
             android:weightSum="3">
@@ -56,9 +58,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/startstop_button"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/start_stop_button_start" />
+                <Button
+                    android:id="@+id/test_button"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/start_stop_button_start" />
+
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
-    </GridLayout>
+    <!--</GridLayout>-->
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
@@ -77,13 +101,13 @@
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
+            <!--<Button
                 android:id="@+id/startstop_button"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/start_stop_button_start" />
+                android:text="@string/start_stop_button_start" />-->
 
         </LinearLayout>
     </FrameLayout>

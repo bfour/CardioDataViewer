@@ -18,6 +18,7 @@
     <string name="app_name">CardioApp</string>
     <string name="start_stop_button_start">Start</string>
     <string name="start_stop_button_stop">Stop</string>
+    <string name="test_button">Test</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -38,5 +39,12 @@
     <string name="pref_title_sync_frequency">Server IP/Path</string>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <string name="title_activity_test">TestActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

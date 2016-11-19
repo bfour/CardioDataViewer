@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.graphs);
 
-        // Set up the user interaction to manually show or hide the system UI.
+        // Set up the user interaction to manually show or hide the system UI.a
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,6 +148,17 @@ public class MainActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.startstop_button).setOnTouchListener(mDelayHideTouchListener);
+
+        findViewById(R.id.test_button).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() != MotionEvent.ACTION_DOWN)
+                    return false;
+                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         // setup graphs etc.
         GraphViewObserver serviceObserver = new GraphViewObserver(setupGraphs());
@@ -197,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        // delayedHide(100);
+        delayedHide(100);
     }
 
     private void toggle() {
@@ -270,17 +281,30 @@ public class MainActivity extends AppCompatActivity {
 
         // lead I
         GraphView graphI = (GraphView) findViewById(R.id.graph1);
-        // graphI.getGridLabelRenderer().set
-        graphI.getViewport().setXAxisBoundsManual(true);
-        graphI.getViewport().setMinX(System.currentTimeMillis());
-        graphI.getViewport().setMinX(System.currentTimeMillis());
         graphI.setTitle("I");
-        graphI.setHorizontalScrollBarEnabled(true);
+
+        graphI.getViewport().setXAxisBoundsManual(true);
+//        graphI.getViewport().setMaxXAxisSize(10000);
+        graphI.getViewport().setMinX(0);
+        graphI.getViewport().setMaxX(0+10000);
+        graphI.getViewport().setYAxisBoundsManual(true);
         graphI.getViewport().setMinY(-1);
-        graphI.setSoundEffectsEnabled(true);
-        graphI.getViewport().setMaxY(1);
+        graphI.getViewport().setMaxY(1.5);
+
+        graphI.setHorizontalScrollBarEnabled(true);
+        graphI.getViewport().setScalable(true);
+        graphI.getViewport().setScalableY(false);
+        graphI.getViewport().setScrollable(true);
+        graphI.getViewport().setScrollableY(false);
+//        graphI.setSoundEffectsEnabled(true);
+
+
+        graphI.getGridLabelRenderer().setNumHorizontalLabels(6);
+
         LineGraphSeries<DataPoint> seriesI = new LineGraphSeries<>();
         seriesI.setTitle("I");
+        seriesI.setDrawDataPoints(true);
+        seriesI.setDataPointsRadius(10);
         graphI.addSeries(seriesI);
         list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
                 graphI, seriesI,

@@ -45,6 +45,9 @@ public class GraphViewObserver {
 
         handler = new Handler();
         Runnable runner = new Runnable() {
+
+            // TODO optimize timing
+
             private long lastTime = -1;
             private int cycleCounter = 0;
             private long diffDiffMs = 0;
@@ -97,12 +100,10 @@ public class GraphViewObserver {
     }
 
     public synchronized List<CardiovascularData> pop() {
-        int thisBucketIndex = lastBucketPopped+1;
-        if (bufferBuckets.size() <= thisBucketIndex)
+        if (bufferBuckets.size() == 0)
             return emptyList;
-        List<CardiovascularData> retCopy = bufferBuckets.get(thisBucketIndex);
-        bufferBuckets.remove(thisBucketIndex);
-        lastBucketPopped = thisBucketIndex;
+        List<CardiovascularData> retCopy = bufferBuckets.get(0);
+        bufferBuckets.remove(0);
         return retCopy;
     }
 

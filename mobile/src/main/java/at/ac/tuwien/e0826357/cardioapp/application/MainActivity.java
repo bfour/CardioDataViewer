@@ -372,7 +372,6 @@ public class MainActivity extends AppCompatActivity {
 
         graph.getGridLabelRenderer().setHighlightZeroLines(true);
         graph.getGridLabelRenderer().setGridColor(Color.rgb(255,178,178));
-        graph.getGridLabelRenderer().setHorizontalLabelsAngle(10);
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             private Calendar cal = Calendar.getInstance();
             private String timeStringCache = "";

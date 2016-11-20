@@ -31,56 +31,78 @@ import at.ac.tuwien.e0826357.cardioapp.commons.domain.Triple;
 
 public class GraphViewObserver {
 
-    private static final int VIEWPORT_WIDTH = 18161;
+    private static final int BUFFER_BUCKETS = 20000;
+    private static final int BUCKET_SIZE = 10;
+
     private final Handler handler;
 
-    private List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> graphsAndSeries;
-    private boolean hasChanged;
-    private long currentXAnchor;
-
-    private long lastX = 0;
-
-    private List<DataPoint> buffer = new ArrayList<>(2000);
+    private List<List<CardiovascularData>> bufferBuckets = new ArrayList<>(BUFFER_BUCKETS);
+    private int lastBucketPopped = -1;
+    private List<CardiovascularData> emptyList = new ArrayList<>(0);
 
     public GraphViewObserver(
             final List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> graphsAndSeries) {
-        this.graphsAndSeries = graphsAndSeries;
-        hasChanged = false;
-        currentXAnchor = 0;
+
         handler = new Handler();
-        Runnable runner2 = new Runnable() {
+        Runnable runner = new Runnable() {
+            private long lastTime = -1;
+            private int cycleCounter = 0;
+            private long diffDiffMs = 0;
+
             @Override
             public void run() {
-                for (DataPoint datapoint : pop()) {
-                    graphsAndSeries.get(1).getB().appendData(datapoint, true, 2000);
-//                    triple.getA().getViewport().setMinX(x - lastX);
-//                    triple.getA().getViewport().setMaxX((x - lastX) + 1000);
-//                triple.getA().setScrollX(100);
+                long startTime = System.currentTimeMillis();
+                for (CardiovascularData row : pop()) {
+                    cycleCounter++;
+                    long time = row.getTime();
+                    if (lastTime == -1)
+                        lastTime = time;
+                    for (Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries)
+                        triple.getB().appendData(new DataPoint(time, triple.getC().get(row)), true, 2000, cycleCounter != 1);
+                    // every 10 cycles determine wait (draw in real time: one second in graph drawn in one second)
+                    if (cycleCounter == 10) {
+                        cycleCounter = 0;
+                        long diffInGraph = time - lastTime;
+                        long now = System.currentTimeMillis();
+                        long diffInReality = now - startTime;
+                        diffDiffMs = (diffInGraph - diffInReality) + (diffDiffMs < 0 ? diffDiffMs : 0);
+                        if (diffDiffMs > 0)
+                            try {
+                                Thread.sleep(diffDiffMs);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                return;
+                            }
+                        startTime = System.currentTimeMillis();
+                        lastTime = time;
+                    }
                 }
-                handler.postDelayed(this, 200);
+                handler.postDelayed(this, 10);
             }
         };
-        handler.postDelayed(runner2, 1000);
+        handler.postDelayed(runner, 1000);
     }
 
     public synchronized void update(final CardiovascularData data) {
-        long x = data.getTime();
-        if (lastX == 0) lastX = x;
-        buffer.add(new DataPoint(x - lastX, data.getLeadII()));
-//        final long x = data.getTime();
-//        if (lastX == 0) lastX = x;
-//        int count = 1;
-//        for (final Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries) {
-//            if (count == 2)
-//                handler.postDelayed(, 10);
-//            if (count == 2) break;
-//            count++;
-//        }
+        if (bufferBuckets.size() == 0)
+            bufferBuckets.add(new ArrayList<CardiovascularData>(BUCKET_SIZE));
+        List<CardiovascularData> lastBucket = bufferBuckets.get(bufferBuckets.size()-1);
+        if (lastBucket.size() == BUCKET_SIZE) {
+            List<CardiovascularData> newBucket = new ArrayList<>(BUCKET_SIZE);
+            newBucket.add(data);
+            bufferBuckets.add(newBucket);
+        } else {
+            lastBucket.add(data);
+        }
     }
 
-    public synchronized List<DataPoint> pop() {
-        List<DataPoint> retCopy = new ArrayList<>(buffer);
-        buffer.clear();
+    public synchronized List<CardiovascularData> pop() {
+        int thisBucketIndex = lastBucketPopped+1;
+        if (bufferBuckets.size() <= thisBucketIndex)
+            return emptyList;
+        List<CardiovascularData> retCopy = bufferBuckets.get(thisBucketIndex);
+        bufferBuckets.remove(thisBucketIndex);
+        lastBucketPopped = thisBucketIndex;
         return retCopy;
     }
 

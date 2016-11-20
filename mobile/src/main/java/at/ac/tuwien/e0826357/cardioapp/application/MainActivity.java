@@ -19,6 +19,7 @@ package at.ac.tuwien.e0826357.cardioapp.application;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -29,14 +30,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import at.ac.tuwien.e0826357.cardioapp.R;
@@ -47,6 +54,7 @@ import at.ac.tuwien.e0826357.cardioapp.commons.service.ServiceException;
 import at.ac.tuwien.e0826357.cardioapp.service.CardiovascularDataService;
 import at.ac.tuwien.e0826357.cardioapp.service.GraphViewObserver;
 import at.ac.tuwien.e0826357.cardioapp.service.ServiceManager;
+import at.ac.tuwien.e0826357.cardioapp.service.Utils;
 
 import static at.ac.tuwien.e0826357.cardioapp.R.id.graph2;
 
@@ -281,33 +289,11 @@ public class MainActivity extends AppCompatActivity {
         List<Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>> list = new ArrayList<>(
                 3);
 
-        // lead I
-        GraphView graphI = (GraphView) findViewById(R.id.graph1);
-        graphI.setTitle("I");
-
-        graphI.getViewport().setXAxisBoundsManual(true);
-//        graphI.getViewport().setMaxXAxisSize(10000);
-        graphI.getViewport().setMinX(0);
-        graphI.getViewport().setMaxX(0+10000);
-        graphI.getViewport().setYAxisBoundsManual(true);
-        graphI.getViewport().setMinY(-1);
-        graphI.getViewport().setMaxY(1.5);
-
-        graphI.setHorizontalScrollBarEnabled(true);
-        graphI.getViewport().setScalable(true);
-        graphI.getViewport().setScalableY(false);
-        graphI.getViewport().setScrollable(true);
-        graphI.getViewport().setScrollableY(false);
-//        graphI.setSoundEffectsEnabled(true);
-
-
-        graphI.getGridLabelRenderer().setNumHorizontalLabels(6);
-
+        // I
+        final GraphView graphI = (GraphView) findViewById(R.id.graph1);
         LineGraphSeries<DataPoint> seriesI = new LineGraphSeries<>();
-        seriesI.setTitle("I");
-        seriesI.setDrawDataPoints(true);
-        seriesI.setDataPointsRadius(10);
         graphI.addSeries(seriesI);
+        formatGraph(graphI, seriesI, "I");
         list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
                 graphI, seriesI,
                 new GenericGetter<CardiovascularData, Double>() {
@@ -317,17 +303,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }));
 
-        // lead II
-        GraphView graphII = (GraphView) findViewById(graph2);
-        graphII.setTitle("II");
+        // scaling
+        graphI.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                adjustGraphSize(graphI);
+            }
+        });
+
+        // II
+        final GraphView graphII = (GraphView) findViewById(graph2);
         LineGraphSeries<DataPoint> seriesII = new LineGraphSeries<>();
         graphII.addSeries(seriesII);
-        graphII.getViewport().setXAxisBoundsManual(true);
-        graphII.getViewport().setMinX(0);
-        graphII.getViewport().setMaxX(700);
-        graphII.getViewport().setYAxisBoundsManual(true);
-        graphII.getViewport().setMinY(-1);
-        graphII.getViewport().setMaxY(1.5);
+        formatGraph(graphII, seriesII, "II");
         list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
                 graphII, seriesII,
                 new GenericGetter<CardiovascularData, Double>() {
@@ -337,12 +325,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }));
 
-        // lead III
-        GraphView graphIII = (GraphView) findViewById(R.id.graph3);
-        graphIII.setTitle("III");
+        // scaling
+        graphII.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                adjustGraphSize(graphII);
+            }
+        });
+
+        // III
+        final GraphView graphIII = (GraphView) findViewById(R.id.graph3);
         LineGraphSeries<DataPoint> seriesIII = new LineGraphSeries<>();
-        seriesIII.setTitle("III");
         graphIII.addSeries(seriesIII);
+        formatGraph(graphIII, seriesIII, "III");
         list.add(new Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>>(
                 graphIII, seriesIII,
                 new GenericGetter<CardiovascularData, Double>() {
@@ -352,7 +347,86 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }));
 
+        // scaling
+        graphIII.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                adjustGraphSize(graphIII);
+            }
+        });
+
         return list;
+    }
+
+    /**
+     * Determines proportion between negative and positive area of graph regarding ordinate values.
+     */
+    private static final double Y_PROPORTION_FACTOR = 0.318182;
+    private static final DateFormat FULL_ISO_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateFormat MMSS_FORMAT = new SimpleDateFormat("mm:ss");
+    private void formatGraph(GraphView graph, LineGraphSeries<?> series, String title) {
+
+        graph.setBackgroundColor(Color.WHITE);
+        graph.getLegendRenderer().setVisible(true);
+        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+
+        graph.getGridLabelRenderer().setHighlightZeroLines(true);
+        graph.getGridLabelRenderer().setGridColor(Color.rgb(255,178,178));
+        graph.getGridLabelRenderer().setHorizontalLabelsAngle(10);
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+            private Calendar cal = Calendar.getInstance();
+            private String timeStringCache = "";
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
+                    cal.setTimeInMillis((long) value);
+                    DateFormat format;
+                    int seconds = cal.get(Calendar.SECOND);
+                    if (seconds == 0)
+                        format = FULL_ISO_FORMAT;
+                    else
+                        format = MMSS_FORMAT;
+                    String timeString = format.format(cal.getTime());
+                    if (timeString.equals(timeStringCache))
+                        return "";
+                    timeStringCache = timeString;
+                    return timeString;
+                } else {
+                    String valueString = String.format("%.1f", value);
+                    if (valueString.equals("0") || valueString.equals("1.0") || valueString.equals("-0.05"))
+                        return super.formatLabel(value, isValueX);
+                    else
+                        return "";
+                }
+            }
+        });
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setYAxisBoundsManual(true);
+
+        series.setTitle(title);
+        series.setColor(Color.BLACK);
+        series.setThickness(2);
+
+    }
+
+    public void adjustGraphSize(GraphView graph) {
+
+        float wMm = Utils.pxToMm(graph.getGraphContentWidth(), this);
+        float hMm = Utils.pxToMm(graph.getGraphContentHeight(), this);
+
+        // make grid of 1mm
+        int numXLabels = (int) Math.floor(wMm);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(Math.round(wMm * 40)); // 0.2s/5mm -> 0.04s/mm -> 40ms/mm
+        graph.getGridLabelRenderer().setNumHorizontalLabels(numXLabels/2);
+
+        int numYLabels = (int) Math.floor(hMm);
+        double minY = Y_PROPORTION_FACTOR * hMm * -1;
+        double maxY = hMm + minY;
+        graph.getViewport().setMinY(minY/10);
+        graph.getViewport().setMaxY(maxY/10);
+        graph.getGridLabelRenderer().setNumVerticalLabels(numYLabels);
+
     }
 
 }

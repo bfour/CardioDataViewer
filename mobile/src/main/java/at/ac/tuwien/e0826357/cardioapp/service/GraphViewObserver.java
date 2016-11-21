@@ -46,50 +46,62 @@ public class GraphViewObserver {
         handler = new Handler();
         Runnable runner = new Runnable() {
 
-            // TODO optimize timing
+            // TODO optimize timing & performance
 
-            private long lastTime = -1;
+            private long lastDataTime = -1;
             private int cycleCounter = 0;
             private long diffDiffMs = 0;
+            private long effectiveDelay = 0;
+            private int runCounter = 0;
 
             @Override
             public void run() {
-                long startTime = System.currentTimeMillis();
-                for (CardiovascularData row : pop()) {
+                runCounter++;
+                if (runCounter > 1000)
+                    runCounter = 0;
+                long runStartTime = System.currentTimeMillis();
+                List<CardiovascularData> bucket = pop();
+                for (CardiovascularData row : bucket) {
                     cycleCounter++;
-                    long time = row.getTime();
-                    if (lastTime == -1)
-                        lastTime = time;
+                    long thisDataTime = row.getTime();
+                    if (lastDataTime == -1) // first run
+                        lastDataTime = thisDataTime;
                     for (Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries)
-                        triple.getB().appendData(new DataPoint(time, triple.getC().get(row)), true, 2000, cycleCounter != 1);
-                    // every 10 cycles determine wait (draw in real time: one second in graph drawn in one second)
-                    if (cycleCounter == 10) {
-                        cycleCounter = 0;
-                        long diffInGraph = time - lastTime;
-                        long now = System.currentTimeMillis();
-                        long diffInReality = now - startTime;
-                        diffDiffMs = (diffInGraph - diffInReality) + (diffDiffMs < 0 ? diffDiffMs : 0);
-                        if (diffDiffMs > 0)
-                            try {
-                                Thread.sleep(diffDiffMs);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                                return;
-                            }
-                        startTime = System.currentTimeMillis();
-                        lastTime = time;
+                        triple.getB().appendData(new DataPoint(thisDataTime, triple.getC().get(row)), false, 2000, (runCounter % 20) == 0);
+
+                    // determine scroll to end (always fill viewport, then scroll to current end/clear viewport)
+                    for (Triple<GraphView, LineGraphSeries<DataPoint>, GenericGetter<CardiovascularData, Double>> triple : graphsAndSeries) {
+                        long maxX = (long) triple.getA().getViewport().getMaxX(false);
+                        if (row.getTime() >= maxX) {
+                            triple.getA().getViewport().setMinX(row.getTime());
+                            triple.getA().getViewport().setMaxX(row.getTime() + 1861); // TODO determine offset based on real width
+                        }
                     }
+
+                    // timing
+                    long diffInGraph = thisDataTime - lastDataTime;
+                    long now = System.currentTimeMillis();
+                    long diffInReality = now - runStartTime;
+                    diffDiffMs = (diffInGraph - diffInReality) + (diffDiffMs < 0 ? diffDiffMs : 0);
+                    effectiveDelay = (diffDiffMs > 0 ? diffDiffMs : 0);
+                    runStartTime = System.currentTimeMillis();
+                    lastDataTime = thisDataTime;
+
                 }
-                handler.postDelayed(this, 10);
+                cycleCounter = 0;
+                if (bucket.isEmpty()) // if no data received, wait 100ms
+                    effectiveDelay = 100;
+                effectiveDelay = 0;
+                handler.postDelayed(this, effectiveDelay);
             }
         };
-        handler.postDelayed(runner, 1000);
+        handler.postDelayed(runner, 10);
     }
 
     public synchronized void update(final CardiovascularData data) {
         if (bufferBuckets.size() == 0)
             bufferBuckets.add(new ArrayList<CardiovascularData>(BUCKET_SIZE));
-        List<CardiovascularData> lastBucket = bufferBuckets.get(bufferBuckets.size()-1);
+        List<CardiovascularData> lastBucket = bufferBuckets.get(bufferBuckets.size() - 1);
         if (lastBucket.size() == BUCKET_SIZE) {
             List<CardiovascularData> newBucket = new ArrayList<>(BUCKET_SIZE);
             newBucket.add(data);

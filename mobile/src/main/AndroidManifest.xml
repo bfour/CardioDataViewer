@@ -41,11 +41,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="at.ac.tuwien.e0826357.cardioapp.application.MainActivity" />
         </activity>
-        <activity
-            android:name=".application.TestActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_test"
-            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

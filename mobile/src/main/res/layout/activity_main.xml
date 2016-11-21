@@ -68,14 +68,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/start_stop_button_start" />
-                <Button
-                    android:id="@+id/test_button"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/start_stop_button_start" />
-
 
             </LinearLayout>
 

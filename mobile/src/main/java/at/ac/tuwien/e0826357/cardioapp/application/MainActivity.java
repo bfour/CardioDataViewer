@@ -159,17 +159,6 @@ public class MainActivity extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.startstop_button).setOnTouchListener(mDelayHideTouchListener);
 
-        findViewById(R.id.test_button).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() != MotionEvent.ACTION_DOWN)
-                    return false;
-                Intent intent = new Intent(MainActivity.this, TestActivity.class);
-                startActivity(intent);
-                return true;
-            }
-        });
-
         // setup graphs etc.
         GraphViewObserver serviceObserver = new GraphViewObserver(setupGraphs());
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -369,6 +358,7 @@ public class MainActivity extends AppCompatActivity {
         graph.setBackgroundColor(Color.WHITE);
         graph.getLegendRenderer().setVisible(true);
         graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        graph.getLegendRenderer().setBackgroundColor(Color.argb(0, 255, 255, 255));
 
         graph.getGridLabelRenderer().setHighlightZeroLines(true);
         graph.getGridLabelRenderer().setGridColor(Color.rgb(255,178,178));
